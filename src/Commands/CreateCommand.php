@@ -3,26 +3,37 @@
 namespace Logg\Commands;
 
 use Logg\Entry\Entry;
-use Logg\Entry\EntryCreator;
+use Logg\Entry\EntryFileFactory;
+use Logg\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CreateCommand extends Command
 {
     /**
-     * @var EntryCreator
+     * @var EntryFileFactory
      */
     private $creator;
 
-    public function __construct(EntryCreator $entryCreator)
-    {
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    public function __construct(
+        EntryFileFactory $entryCreator,
+        Filesystem $filesystem
+    ) {
         parent::__construct();
 
         $this->creator = $entryCreator;
+        $this->filesystem = $filesystem;
     }
 
     public function configure()
@@ -30,17 +41,18 @@ class CreateCommand extends Command
         $this->setName('create');
         $this->setDescription('Create log entry');
 
-        $this->addArgument('title', InputArgument::REQUIRED, 'Short description of what changed');
-        $this->addOption('type', '', InputArgument::OPTIONAL, 'Fix|new');
-        $this->addOption('author', '', InputArgument::OPTIONAL);
+        $this->addArgument('title', InputArgument::OPTIONAL, 'Short description of what changed');
+        $this->addOption('type', 't', InputArgument::OPTIONAL, 'Fix|new');
+        $this->addOption('author', 'u', InputArgument::OPTIONAL);
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $type = $input->getOption('type');
+        $helper = new QuestionHelper();
+        $io = new SymfonyStyle($input, $output);
 
         if (empty($type) || in_array($type, Entry::TYPES, true)) {
-            $helper = new QuestionHelper();
             $choice = new ChoiceQuestion(
                 'Please specify the type of change',
                 [
@@ -60,6 +72,18 @@ class CreateCommand extends Command
             'author' => $input->getOption('author')
         ]);
 
-        $this->creator->generate($entry);
+        $entryFile = $this->creator->generate($entry);
+
+        $io->writeln('');
+
+        $io->note('Write: ' . $this->filesystem->getEntriesPath() . '/'. $entryFile->getFilename());
+        $io->writeln('---');
+
+        $io->write($entryFile->getContent());
+        
+        $io->writeln('');
+        $io->askQuestion(new ConfirmationQuestion('Is this ok?'));
+
+        $this->filesystem->writeEntry($entryFile);
     }
 }

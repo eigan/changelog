@@ -4,8 +4,10 @@ namespace Logg;
 
 use Logg\Commands\CreateCommand;
 use Logg\Commands\Parse;
+use Logg\Entry\EntryFileFactory;
 use Logg\Formatter\IFormatter;
 use Logg\Formatter\MarkdownFormatter;
+use Logg\Handler\YamlHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -26,6 +28,8 @@ class Application extends \Symfony\Component\Console\Application
     public function __construct(string $rootPath)
     {
         parent::__construct('Log generator', 'dev');
+
+        $this->setDefaultCommand('create');
 
         $this->container = \DI\ContainerBuilder::buildDevContainer();
     }
@@ -79,6 +83,7 @@ class Application extends \Symfony\Component\Console\Application
 
         $filesystem = new Filesystem($changelogPath, $entriesPath);
         $this->container->set(Filesystem::class, $filesystem);
+        $this->container->set(EntryFileFactory::class, new EntryFileFactory($filesystem, new YamlHandler()));
     }
 
     protected function getDefaultCommands()

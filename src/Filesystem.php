@@ -3,6 +3,7 @@
 namespace Logg;
 
 use InvalidArgumentException;
+use Logg\Entry\EntryFile;
 
 class Filesystem
 {
@@ -35,6 +36,11 @@ class Filesystem
 
         $this->changelogPath = $changelogPath;
         $this->entriesPath = $entriesPath;
+    }
+
+    public function getEntriesPath(): string
+    {
+        return $this->entriesPath;
     }
 
     /**
@@ -70,9 +76,14 @@ class Filesystem
         return $fileContents;
     }
 
-    public function writeEntry(string $filename, string $content)
+    /**
+     * Writes entryfile to chosen directory
+     *
+     * @param EntryFile $entryFile
+     */
+    public function writeEntry(EntryFile $entryFile): void
     {
-        file_put_contents($this->entriesPath .'/'. $filename, $content);
+        file_put_contents($this->entriesPath .'/'. $entryFile->getFilename(), $entryFile->getContent());
     }
 
     /**
@@ -80,7 +91,7 @@ class Filesystem
      *
      * TODO: Ensure we actually delete entries..
      */
-    public function cleanup()
+    public function cleanup(): void
     {
         foreach (new \DirectoryIterator($this->entriesPath) as $file) {
             if ($file->isDot()) {

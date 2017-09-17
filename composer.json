@@ -1,5 +1,6 @@
 {
-    "name": "Logg",
+    "name": "eigan/changelog",
+    "type": "project",
 
     "require": {
         "friendsofphp/php-cs-fixer": "^2.6",

@@ -2,9 +2,9 @@
 
 
 ```
-bin/logg create "My changelog entry"
+bin/changelog "My changelog entry"
 ```
 
 ```
-bin/logg parse "My new version"
+bin/changelog parse "My new version"
 ```
