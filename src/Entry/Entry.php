@@ -4,11 +4,12 @@ namespace Logg\Entry;
 
 class Entry
 {
-    protected $type;
+    const TYPES = ['fix', 'security', 'other', 'feature'];
 
+    /**
+     * @var string
+     */
     protected $title;
-
-    protected $author;
 
     /**
      * All properties from file
@@ -17,21 +18,29 @@ class Entry
      */
     protected $all;
 
-    public function __construct(string $title, string $type = null, string $author = null, array $all = [])
+    public function __construct(string $title, array $all)
     {
-        $this->type = $type;
         $this->title = $title;
-        $this->author = $author;
-        $this->all = $all;
-    }
 
-    public function getType(): string
-    {
-        return $this->type;
+        if (isset($all['title']) === false) {
+            throw new \LogicException('Missing title in entry body');
+        }
+        
+        $this->all = $all;
     }
 
     public function getTitle(): string
     {
         return $this->title;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->all['type'] ?? null;
+    }
+
+    public function toArray(): array
+    {
+        return $this->all;
     }
 }

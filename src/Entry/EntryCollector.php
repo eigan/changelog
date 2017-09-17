@@ -2,37 +2,37 @@
 
 namespace Logg\Entry;
 
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
+use Logg\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
 class EntryCollector
 {
-    const CHANGELOG_DIR = 'changelogs';
 
     /**
      * @var Filesystem
      */
     protected $filesystem;
 
-    public function __construct()
+    public function __construct(Filesystem $filesystem)
     {
-        $this->filesystem = new Filesystem(new Local(__DIR__ . '/../../'));
+        $this->filesystem = $filesystem;
     }
 
     /**
+     * Read all entry files, parse them and create Entry objects
+     *
      * @return Entry[]
      */
     public function collect()
     {
         $entries = [];
 
-        $files = $this->filesystem->listContents(self::CHANGELOG_DIR);
+        $files = $this->filesystem->getEntryContents();
 
         foreach ($files as $file) {
-            $log = $this->parseLogEntry($this->filesystem->read($file['path']));
+            $log = $this->parseLogEntry($file['content']);
 
-            $entry = new Entry($log['title'], $log['type'], @$log['author'], $log);
+            $entry = new Entry($log['title'], $log);
 
             $entries[] = $entry;
         }
@@ -40,10 +40,15 @@ class EntryCollector
         return $entries;
     }
 
+    /**
+     * Parse a single log entry (only yml)
+     * TODO: Support more than yml
+     *
+     * @param  string $content
+     * @return array
+     */
     private function parseLogEntry(string $content): array
     {
-        // TODO: Support more than yaml
-
         return array_merge(
             [
                 'title' => '',

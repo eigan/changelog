@@ -2,9 +2,7 @@
 
 namespace Logg;
 
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
-use Logg\Formatter\MarkdownFormatter;
+use Logg\Formatter\IFormatter;
 
 class LogMerger
 {
@@ -14,29 +12,34 @@ class LogMerger
     private $filesystem;
 
     /**
+     * @var IFormatter
+     */
+    private $formatter;
+
+    /**
      * LogMerger constructor.
      *
      * TODO: Require Formatter and Filesystem
      */
-    public function __construct()
+    public function __construct(Filesystem $filesystem, IFormatter $formatter)
     {
-        $this->filesystem = new Filesystem(new Local(__DIR__ . '/../'));
+        $this->filesystem = $filesystem;
+        $this->formatter = $formatter;
     }
 
     /**
+     * Formats the entries and append it to the changelog
+     *
      * @param string $headline
      * @param array  $entries
      */
     public function append(string $headline, array $entries): void
     {
-        // TODO: Not hardcode a formatter
-        $formatter = new MarkdownFormatter();
-
-        $content = $formatter->format($headline, $entries);
+        $content = $this->formatter->format($headline, $entries);
 
         // The formatter should append content
-        $entireContent = $content . "\n" . $this->filesystem->read('CHANGELOG.md');
+        $entireContent = $content . "\n";
 
-        $this->filesystem->put('CHANGELOG.md', $entireContent);
+        $this->filesystem->appendChangelog($entireContent);
     }
 }

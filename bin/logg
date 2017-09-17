@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+// installed via composer?
+if (file_exists($a = __DIR__.'/../../../autoload.php')) {
+    $rootPath = __DIR__.'/../../../';
+
+    require_once $a;
+} else {
+    $rootPath = __DIR__.'/../';
+
+    require_once __DIR__.'/../vendor/autoload.php';
+}
+
+$app = new \Logg\Application($rootPath);
+
+$app->run();

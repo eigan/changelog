@@ -4,11 +4,12 @@ namespace Logg\Formatter;
 
 use Logg\Entry\Entry;
 
-class MarkdownFormatter
+class MarkdownFormatter implements IFormatter
 {
     // TODO: Formatter options
 
     /**
+     * @param string  $headline
      * @param Entry[] $entries
      *
      * @return string
@@ -26,6 +27,13 @@ class MarkdownFormatter
 
     private function formatEntry(Entry $entry): string
     {
-        return "* [{$entry->getType()}] " . $entry->getTitle();
+        $type = $entry->getType();
+
+        $line = '* ';
+        if (empty($type) === false) {
+            $line .= "[{$entry->getType()}] ";
+        }
+
+        return $line . $entry->getTitle();
     }
 }

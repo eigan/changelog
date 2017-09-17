@@ -3,6 +3,7 @@
 namespace Logg\Commands;
 
 use Logg\Entry\EntryCollector;
+use Logg\Filesystem;
 use Logg\LogMerger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -11,6 +12,33 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Parse extends Command
 {
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
+    /**
+     * @var EntryCollector
+     */
+    private $collector;
+
+    /**
+     * @var LogMerger
+     */
+    private $merger;
+
+    public function __construct(
+        Filesystem $filesystem,
+        EntryCollector $collector,
+        LogMerger $logMerger
+    ) {
+        parent::__construct();
+
+        $this->filesystem = $filesystem;
+        $this->collector = $collector;
+        $this->merger = $logMerger;
+    }
+
     protected function configure()
     {
         $this->setName('parse');
@@ -21,12 +49,10 @@ class Parse extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $collector = new EntryCollector();
-        $entries = $collector->collect();
+        $entries = $this->collector->collect();
 
-        $merger = new LogMerger();
-        $merger->append($input->getArgument('headline'), $entries);
+        $this->merger->append($input->getArgument('headline'), $entries);
 
-        // TODO: Remove entry files
+        $this->filesystem->cleanup();
     }
 }
