@@ -69,11 +69,15 @@ class CreateCommand extends Command
                     '1' => 'new',
                     '2' => 'fix',
                     '3' => 'security',
-                    '4' => 'other'
+                    '0' => 'none'
                 ]
             );
 
             $type = $io->askQuestion($choice);
+
+            if ($type === 'none') {
+                $type = '';
+            }
         }
 
         $entry = new Entry($name, [

@@ -88,13 +88,19 @@ class Filesystem
      */
     public function writeEntry(EntryFile $entryFile): void
     {
-        file_put_contents($this->entriesPath .'/'. $entryFile->getFilename(), $entryFile->getContent());
+        $path = $this->entriesPath .'/'. $entryFile->getFilename();
+
+        if (file_exists($path)) {
+            throw new \RuntimeException('Entry with same name exists. Please specify other name with \'-f\' option');
+        }
+
+        file_put_contents($path, $entryFile->getContent());
     }
 
     /**
      * Remove everything in entries path
      *
-     * TODO: Ensure we actually delete entries..
+     * TODO: Ensure we actually only delete entries..
      */
     public function cleanup(): void
     {
