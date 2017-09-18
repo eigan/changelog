@@ -56,7 +56,7 @@ class CreateCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $type = $input->getArgument('type');
+        $type = $input->getOption('type');
         $title = $input->getArgument('title') ?? $this->repository->getLastCommitMessage();
         $name = $input->getOption('name') ?? $this->repository->getCurrentBranchName();
 
