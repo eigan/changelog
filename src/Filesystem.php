@@ -38,6 +38,11 @@ class Filesystem
         $this->entriesPath = $entriesPath;
     }
 
+    public function getChangelogPath(): string
+    {
+        return $this->changelogPath;
+    }
+
     public function getEntriesPath(): string
     {
         return $this->entriesPath;
@@ -68,7 +73,7 @@ class Filesystem
             }
 
             $fileContents[] = [
-                'file' => $file,
+                'filename' => $file->getFilename(),
                 'content' => file_get_contents($this->entriesPath . '/' . $file->getFilename())
             ];
         }

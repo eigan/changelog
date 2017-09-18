@@ -3,7 +3,7 @@
 namespace Logg\Entry;
 
 use Logg\Filesystem;
-use Symfony\Component\Yaml\Yaml;
+use Logg\Handler\IEntryFileHandler;
 
 class EntryCollector
 {
@@ -11,11 +11,19 @@ class EntryCollector
     /**
      * @var Filesystem
      */
-    protected $filesystem;
+    private $filesystem;
 
-    public function __construct(Filesystem $filesystem)
-    {
+    /**
+     * @var IEntryFileHandler
+     */
+    private $handler;
+
+    public function __construct(
+        Filesystem $filesystem,
+        IEntryFileHandler $handler
+    ) {
         $this->filesystem = $filesystem;
+        $this->handler = $handler;
     }
 
     /**
@@ -23,7 +31,7 @@ class EntryCollector
      *
      * @return Entry[]
      */
-    public function collect()
+    public function collect(): array
     {
         $entries = [];
 
@@ -32,17 +40,28 @@ class EntryCollector
         foreach ($files as $file) {
             $log = $this->parseLogEntry($file['content']);
 
-            $entry = new Entry($log['title'], $log);
+            $entry = new Entry($file['filename'], $log);
 
             $entries[] = $entry;
         }
+
+        // TODO: Should probably be somewhere else
+        $typeOrder = [
+            'new', 'fix', 'security', 'other'
+        ];
+
+        usort($entries, function ($firstEntry, $secondEntry) use ($typeOrder) {
+            $firstIndex = array_search($firstEntry->getType(), $typeOrder) ?? 10;
+            $secondIndex = array_search($secondEntry->getType(), $typeOrder) ?? 10;
+
+            return $firstIndex - $secondIndex;
+        });
 
         return $entries;
     }
 
     /**
      * Parse a single log entry (only yml)
-     * TODO: Support more than yml
      *
      * @param  string $content
      * @return array
@@ -55,7 +74,7 @@ class EntryCollector
                 'type' => '',
                 'author' => '',
             ],
-            Yaml::parse($content)
+            $this->handler->parse($content)
         );
     }
 }

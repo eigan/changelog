@@ -2,13 +2,12 @@
 
 namespace Logg;
 
-use Cz\Git\GitRepository;
-use GitWrapper\GitWorkingCopy;
 use Logg\Commands\CreateCommand;
 use Logg\Commands\Parse;
 use Logg\Entry\EntryFileFactory;
 use Logg\Formatter\IFormatter;
 use Logg\Formatter\MarkdownFormatter;
+use Logg\Handler\IEntryFileHandler;
 use Logg\Handler\YamlHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -35,7 +34,7 @@ class Application extends \Symfony\Component\Console\Application
     public function __construct(string $rootPath)
     {
         parent::__construct('Log generator', 'dev');
-        
+
         $this->rootPath = $rootPath;
         $this->container = \DI\ContainerBuilder::buildDevContainer();
     }
@@ -87,12 +86,13 @@ class Application extends \Symfony\Component\Console\Application
         $entriesPath = $argvInput->getOption('entries');
         $changelogPath = $argvInput->getOption('file');
 
-        $gitWrapper = new GitRepository($this->rootPath);
+        $git = new GitRepository($this->rootPath);
 
         $filesystem = new Filesystem($changelogPath, $entriesPath);
         $this->container->set(Filesystem::class, $filesystem);
-        $this->container->set(GitWorkingCopy::class, $gitWrapper);
-        $this->container->set(EntryFileFactory::class, new EntryFileFactory(new YamlHandler(), $gitWrapper));
+        $this->container->set(GitRepository::class, $git);
+        $this->container->set(IEntryFileHandler::class, new YamlHandler());
+        $this->container->set(EntryFileFactory::class, new EntryFileFactory(new YamlHandler(), $git));
     }
 
     protected function getDefaultCommands()

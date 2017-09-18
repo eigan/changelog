@@ -9,7 +9,7 @@ class Entry
     /**
      * @var string
      */
-    protected $title;
+    protected $name;
 
     /**
      * All properties from file
@@ -18,12 +18,12 @@ class Entry
      */
     protected $all;
 
-    public function __construct(string $title, array $all)
+    public function __construct(string $name, array $all)
     {
-        $this->title = $title;
+        $this->name = $name;
 
         if (isset($all['title']) === false) {
-            throw new \LogicException('Missing title in entry body');
+            throw new \InvalidArgumentException('Missing title in entry body');
         }
 
         $this->all = array_merge(
@@ -36,9 +36,19 @@ class Entry
         );
     }
 
+    /**
+     * A unique name for this entry
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
     public function getTitle(): string
     {
-        return $this->title;
+        return $this->all['title'];
     }
 
     public function getType(): ?string

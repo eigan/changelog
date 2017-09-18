@@ -4,8 +4,14 @@ namespace Logg\Entry;
 
 class EntryFile
 {
+    /**
+     * @var string
+     */
     private $filename;
 
+    /**
+     * @var string
+     */
     private $content;
 
     public function __construct(string $filename, string $content)

@@ -2,8 +2,7 @@
 
 namespace Logg\Entry;
 
-use Cz\Git\GitRepository;
-use GitWrapper\GitWorkingCopy;
+use Logg\GitRepository;
 use Logg\Handler\IEntryFileHandler;
 
 /**
@@ -38,10 +37,9 @@ class EntryFileFactory
      */
     public function generate(Entry $entry): EntryFile
     {
-        $fileContent = $this->handler->parse($entry);
-        $filename = $this->makeFilename($entry);
+        $fileContent = $this->handler->transform($entry);
 
-        return new EntryFile($filename, $fileContent);
+        return new EntryFile($entry->getName(), $fileContent);
     }
 
     /**
