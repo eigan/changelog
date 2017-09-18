@@ -8,7 +8,6 @@
     "require": {
         "symfony/console": "^3.3",
         "symfony/yaml": "^3.3",
-        "php-di/php-di": "^5.4",
         "czproject/git-php": "^3.10"
     },
 
