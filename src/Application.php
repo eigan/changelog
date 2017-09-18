@@ -88,11 +88,32 @@ class Application extends \Symfony\Component\Console\Application
 
         $git = new GitRepository($this->rootPath);
 
+        $didSetup = $this->setupEnvironment($changelogPath, $entriesPath, $output);
+
+        if ($didSetup === false) {
+            exit();
+        }
+
         $filesystem = new Filesystem($changelogPath, $entriesPath);
         $this->container->set(Filesystem::class, $filesystem);
         $this->container->set(GitRepository::class, $git);
         $this->container->set(IEntryFileHandler::class, new YamlHandler());
         $this->container->set(EntryFileFactory::class, new EntryFileFactory(new YamlHandler(), $git));
+    }
+
+    protected function setupEnvironment(string $changelogPath, string $entriesPath, OutputInterface $output)
+    {
+        if (file_exists($changelogPath) === false) {
+            $output->writeln('Could not find ' . $changelogPath);
+            return false;
+        }
+
+        if (is_dir($entriesPath) === false) {
+            $output->writeln('Could not find entries path: ' . $entriesPath);
+            return false;
+        }
+
+        return true;
     }
 
     protected function getDefaultCommands()

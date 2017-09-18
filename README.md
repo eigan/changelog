@@ -2,7 +2,8 @@
 
 
 ```
-bin/changelog "My changelog entry"
+
+bin/changelog create "My changelog entry"
 ```
 
 ```
