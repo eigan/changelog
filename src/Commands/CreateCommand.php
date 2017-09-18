@@ -3,9 +3,9 @@
 namespace Logg\Commands;
 
 use Logg\Entry\Entry;
-use Logg\Entry\EntryFileFactory;
 use Logg\Filesystem;
 use Logg\GitRepository;
+use Logg\Handler\IEntryFileHandler;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,9 +18,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class CreateCommand extends Command
 {
     /**
-     * @var EntryFileFactory
+     * @var IEntryFileHandler
      */
-    private $creator;
+    private $handler;
 
     /**
      * @var Filesystem
@@ -32,13 +32,13 @@ class CreateCommand extends Command
     private $repository;
 
     public function __construct(
-        EntryFileFactory $entryCreator,
+        IEntryFileHandler $handler,
         Filesystem $filesystem,
         GitRepository $repository
     ) {
         parent::__construct();
 
-        $this->creator = $entryCreator;
+        $this->handler = $handler;
         $this->filesystem = $filesystem;
         $this->repository = $repository;
     }
@@ -56,7 +56,7 @@ class CreateCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $type = $input->getOption('type');
+        $type = $input->getArgument('type');
         $title = $input->getArgument('title') ?? $this->repository->getLastCommitMessage();
         $name = $input->getOption('name') ?? $this->repository->getCurrentBranchName();
 
@@ -86,18 +86,18 @@ class CreateCommand extends Command
             'author' => $input->getOption('author') ?? ''
         ]);
 
-        $entryFile = $this->creator->generate($entry);
+        $content = $this->handler->transform($entry);
 
         $io->writeln('');
 
-        $io->note('Write: ' . $this->filesystem->getEntriesPath() . '/'. $entryFile->getFilename());
+        $io->note('Write: ' . $this->filesystem->getEntriesPath() . '/'. $entry->getName());
         $io->writeln('---');
 
-        $io->write($entryFile->getContent());
+        $io->write($content);
         
         $io->writeln('');
         $io->askQuestion(new ConfirmationQuestion('Is this ok?'));
 
-        $this->filesystem->writeEntry($entryFile);
+        $this->filesystem->writeEntry($entry);
     }
 }

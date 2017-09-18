@@ -3,7 +3,8 @@
 namespace Logg;
 
 use InvalidArgumentException;
-use Logg\Entry\EntryFile;
+use Logg\Entry\Entry;
+use Logg\Handler\IEntryFileHandler;
 
 class Filesystem
 {
@@ -18,13 +19,18 @@ class Filesystem
     private $entriesPath;
 
     /**
+     * @var IEntryFileHandler
+     */
+    private $handler;
+
+    /**
      * Filesystem constructor.
      *
      * @param string $changelogPath
      * @param string $entriesPath
      *
      */
-    public function __construct(string $changelogPath, string $entriesPath)
+    public function __construct(string $changelogPath, string $entriesPath, IEntryFileHandler $handler)
     {
         if (file_exists($changelogPath) === false) {
             throw new InvalidArgumentException('Invalid changelog path');
@@ -36,6 +42,7 @@ class Filesystem
 
         $this->changelogPath = $changelogPath;
         $this->entriesPath = $entriesPath;
+        $this->handler = $handler;
     }
 
     public function getChangelogPath(): string
@@ -82,19 +89,20 @@ class Filesystem
     }
 
     /**
-     * Writes entryfile to chosen directory
+     * Writes entry to chosen directory
      *
-     * @param EntryFile $entryFile
+     * @param Entry $entry
      */
-    public function writeEntry(EntryFile $entryFile): void
+    public function writeEntry(Entry $entry): void
     {
-        $path = $this->entriesPath .'/'. $entryFile->getFilename();
+        $path = $this->entriesPath .'/'. $entry->getName();
+        $content = $this->handler->transform($entry);
 
         if (file_exists($path)) {
             throw new \RuntimeException('Entry with same name exists. Please specify other name with \'-f\' option');
         }
 
-        file_put_contents($path, $entryFile->getContent());
+        file_put_contents($path, $content);
     }
 
     /**
