@@ -25,8 +25,15 @@ class Entry
         if (isset($all['title']) === false) {
             throw new \LogicException('Missing title in entry body');
         }
-        
-        $this->all = $all;
+
+        $this->all = array_merge(
+            [
+                'title' => '',
+                'type' => '',
+                'author' => ''
+            ],
+            $all
+        );
     }
 
     public function getTitle(): string

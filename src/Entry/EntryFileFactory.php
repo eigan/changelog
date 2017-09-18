@@ -2,7 +2,8 @@
 
 namespace Logg\Entry;
 
-use Logg\Filesystem;
+use Cz\Git\GitRepository;
+use GitWrapper\GitWorkingCopy;
 use Logg\Handler\IEntryFileHandler;
 
 /**
@@ -13,21 +14,21 @@ use Logg\Handler\IEntryFileHandler;
 class EntryFileFactory
 {
     /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
      * @var IEntryFileHandler
      */
     private $handler;
 
+    /**
+     * @var GitWorkingCopy
+     */
+    private $git;
+
     public function __construct(
-        Filesystem $filesystem,
-        IEntryFileHandler $handler
+        IEntryFileHandler $handler,
+        GitRepository $git
     ) {
-        $this->filesystem = $filesystem;
         $this->handler = $handler;
+        $this->git = $git;
     }
 
     /**
@@ -52,6 +53,8 @@ class EntryFileFactory
      */
     private function makeFilename(Entry $entry): string
     {
-        return str_replace([' '], ['-'], $entry->getTitle()) . '.yml';
+        $title = $this->git->getCurrentBranchName() ?? $entry->getTitle();
+
+        return str_replace([' '], ['-'], $title) . '.yml';
     }
 }

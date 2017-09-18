@@ -11,8 +11,6 @@ class YamlHandler implements IEntryFileHandler
     {
         $properties = $entry->toArray();
 
-        $properties = array_filter($properties);
-
         return Yaml::dump($properties);
     }
 }

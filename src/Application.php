@@ -2,6 +2,8 @@
 
 namespace Logg;
 
+use Cz\Git\GitRepository;
+use GitWrapper\GitWorkingCopy;
 use Logg\Commands\CreateCommand;
 use Logg\Commands\Parse;
 use Logg\Entry\EntryFileFactory;
@@ -25,12 +27,16 @@ class Application extends \Symfony\Component\Console\Application
      */
     private $container;
 
+    /**
+     * @var string
+     */
+    private $rootPath;
+
     public function __construct(string $rootPath)
     {
         parent::__construct('Log generator', 'dev');
-
-        $this->setDefaultCommand('create');
-
+        
+        $this->rootPath = $rootPath;
         $this->container = \DI\ContainerBuilder::buildDevContainer();
     }
 
@@ -81,9 +87,12 @@ class Application extends \Symfony\Component\Console\Application
         $entriesPath = $argvInput->getOption('entries');
         $changelogPath = $argvInput->getOption('file');
 
+        $gitWrapper = new GitRepository($this->rootPath);
+
         $filesystem = new Filesystem($changelogPath, $entriesPath);
         $this->container->set(Filesystem::class, $filesystem);
-        $this->container->set(EntryFileFactory::class, new EntryFileFactory($filesystem, new YamlHandler()));
+        $this->container->set(GitWorkingCopy::class, $gitWrapper);
+        $this->container->set(EntryFileFactory::class, new EntryFileFactory(new YamlHandler(), $gitWrapper));
     }
 
     protected function getDefaultCommands()

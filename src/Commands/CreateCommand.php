@@ -41,7 +41,7 @@ class CreateCommand extends Command
         $this->setName('create');
         $this->setDescription('Create log entry');
 
-        $this->addArgument('title', InputArgument::OPTIONAL, 'Short description of what changed');
+        $this->addArgument('title', InputArgument::REQUIRED, 'Short description of what changed');
         $this->addOption('type', 't', InputArgument::OPTIONAL, 'Fix|new');
         $this->addOption('author', 'u', InputArgument::OPTIONAL);
     }
@@ -69,7 +69,7 @@ class CreateCommand extends Command
         $entry = new Entry($input->getArgument('title'), [
             'title' => $input->getArgument('title'),
             'type' => $type,
-            'author' => $input->getOption('author')
+            'author' => $input->getOption('author') ?? ''
         ]);
 
         $entryFile = $this->creator->generate($entry);
