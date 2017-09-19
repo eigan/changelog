@@ -69,4 +69,3 @@ Preview:
 #### TODO
  * Handle exceptions in commands
  * Autoresolve formatter
- * Format author too
