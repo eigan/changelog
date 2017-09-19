@@ -2,11 +2,26 @@
 
 namespace Logg;
 
-class GitRepository extends \Cz\Git\GitRepository
+class GitRepository
 {
+    /**
+     * @var string
+     */
+    private $rootPath;
+
+    public function __construct(string $rootPath)
+    {
+        $this->rootPath = $rootPath;
+    }
+
+    public function getCurrentBranchName()
+    {
+        return exec('cd '.$this->rootPath.' && git rev-parse --abbrev-ref HEAD');
+    }
+
     public function getLastCommitMessage(): ?string
     {
-        $lines = $this->extractFromCommand('git log -1 --pretty=%B', 'trim');
+        exec('cd '.$this->rootPath.' && git log -1 --pretty=%B', $lines);
 
         if (is_array($lines) && isset($lines[0])) {
             return $lines[0];
