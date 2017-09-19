@@ -7,6 +7,17 @@ use Symfony\Component\Yaml\Yaml;
 
 class YamlHandler implements IEntryFileHandler
 {
+    public function getExtension(): string
+    {
+        return 'yml';
+    }
+
+    /**
+     * Transform one entry into the contents of the file
+     *
+     * @param  Entry  $entry
+     * @return string
+     */
     public function transform(Entry $entry): string
     {
         $properties = $entry->toArray();

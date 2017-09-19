@@ -101,7 +101,7 @@ class Filesystem
      */
     public function writeEntry(Entry $entry): void
     {
-        $path = $this->entriesPath .'/'. $entry->getName();
+        $path = $this->entriesPath .'/'. $entry->getName() . '.' . $this->handler->getExtension();
         $content = $this->handler->transform($entry);
 
         if (file_exists($path)) {

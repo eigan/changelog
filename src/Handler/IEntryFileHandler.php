@@ -6,6 +6,13 @@ use Logg\Entry\Entry;
 
 interface IEntryFileHandler
 {
+    public function getExtension(): string;
+
+    /**
+     * @param Entry $entry
+     *
+     * @return string
+     */
     public function transform(Entry $entry): string;
 
     /**

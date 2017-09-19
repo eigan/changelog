@@ -90,8 +90,7 @@ class CreateCommand extends Command
 
         $io->writeln('');
 
-        $io->note('Write: ' . $this->filesystem->getEntriesPath() . '/'. $entry->getName());
-        $io->writeln('---');
+        $io->note('Write: ' . $this->filesystem->getEntriesPath() . '/'. $entry->getName(). '.' . $this->handler->getExtension());
 
         $io->write($content);
         
