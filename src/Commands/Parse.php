@@ -86,6 +86,6 @@ class Parse extends Command
         
         $this->merger->append($input->getArgument('headline'), $entries);
 
-        //$this->filesystem->cleanup();
+        $this->filesystem->cleanup();
     }
 }
