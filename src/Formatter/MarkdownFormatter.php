@@ -3,10 +3,19 @@
 namespace Logg\Formatter;
 
 use Logg\Entry\Entry;
+use Logg\Entry\IEntryReferenceProvider;
 
 class MarkdownFormatter implements IFormatter
 {
-    // TODO: Formatter options
+    /**
+     * @var IEntryReferenceProvider
+     */
+    private $referenceProvider;
+    
+    public function __construct(IEntryReferenceProvider $referenceProvider)
+    {
+        $this->referenceProvider = $referenceProvider;
+    }
 
     /**
      * @param string  $headline
@@ -36,6 +45,17 @@ class MarkdownFormatter implements IFormatter
 
         $line .= $entry->getTitle();
 
+        if ($entry->getReference()) {
+            $referenceUrl = $this->referenceProvider->getReferenceUrl($entry->getReference());
+            $referenceText = $this->referenceProvider->getReferenceText($entry->getReference());
+
+            if ($referenceUrl && $referenceText) {
+                $line .= " [$referenceText]($referenceUrl)";
+            } elseif (!$referenceUrl && $referenceText) {
+                $line .= ' ' . $referenceText;
+            }
+        }
+        
         if (strlen($entry->getAuthor()) > 0) {
             $line .= ' (' . $entry->getAuthor() . ')';
         }

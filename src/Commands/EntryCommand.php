@@ -3,6 +3,7 @@
 namespace Logg\Commands;
 
 use Logg\Entry\Entry;
+use Logg\Entry\IEntryReferenceProvider;
 use Logg\Filesystem;
 use Logg\GitRepository;
 use Logg\Handler\IEntryFileHandler;
@@ -27,21 +28,29 @@ class EntryCommand extends Command
      * @var Filesystem
      */
     private $filesystem;
+    
     /**
      * @var GitRepository
      */
     private $repository;
 
+    /**
+     * @var IEntryReferenceProvider
+     */
+    private $referenceProvider;
+    
     public function __construct(
         IEntryFileHandler $handler,
         Filesystem $filesystem,
-        GitRepository $repository
+        GitRepository $repository,
+        IEntryReferenceProvider $referenceProvider
     ) {
         parent::__construct();
 
         $this->handler = $handler;
         $this->filesystem = $filesystem;
         $this->repository = $repository;
+        $this->referenceProvider = $referenceProvider;
     }
 
     public function configure()
@@ -62,12 +71,15 @@ class EntryCommand extends Command
         $title = $this->askForTitle($input, $io);
         $type = $this->askForType($input, $io);
         $author = $this->askForAuthor($input, $io);
+        $reference = $this->askForReference($input, $io);
         $name = $this->askForName($input, $io);
+        
 
-        $entry = new self($name, [
+        $entry = new Entry($name, [
             'title' => $title,
             'type' => $type,
-            'author' => $author
+            'author' => $author,
+            'reference' => $reference
         ]);
 
         $content = $this->handler->transform($entry);
@@ -143,5 +155,10 @@ class EntryCommand extends Command
         }
         
         return $default;
+    }
+    
+    private function askForReference(InputInterface $input, OutputStyle $output)
+    {
+        return $this->referenceProvider->askForReference($output, '');
     }
 }
