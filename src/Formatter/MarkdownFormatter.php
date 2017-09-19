@@ -34,6 +34,12 @@ class MarkdownFormatter implements IFormatter
             $line .= "[{$entry->getType()}] ";
         }
 
-        return $line . $entry->getTitle();
+        $line .= $entry->getTitle();
+
+        if (strlen($entry->getAuthor()) > 0) {
+            $line .= ' (' . $entry->getAuthor() . ')';
+        }
+
+        return $line;
     }
 }
