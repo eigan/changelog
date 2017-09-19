@@ -16,7 +16,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class CreateCommand extends Command
+class EntryCommand extends Command
 {
     /**
      * @var IEntryFileHandler
@@ -46,7 +46,7 @@ class CreateCommand extends Command
 
     public function configure()
     {
-        $this->setName('create');
+        $this->setName('entry');
         $this->setDescription('Create log entry');
 
         $this->addArgument('title', InputArgument::OPTIONAL, 'Short description of what changed');
@@ -64,7 +64,7 @@ class CreateCommand extends Command
         $author = $this->askForAuthor($input, $io);
         $name = $this->askForName($input, $io);
 
-        $entry = new Entry($name, [
+        $entry = new self($name, [
             'title' => $title,
             'type' => $type,
             'author' => $author

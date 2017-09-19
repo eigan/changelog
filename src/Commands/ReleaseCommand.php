@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class Parse extends Command
+class ReleaseCommand extends Command
 {
     /**
      * @var Filesystem
@@ -51,7 +51,7 @@ class Parse extends Command
 
     protected function configure()
     {
-        $this->setName('parse');
+        $this->setName('release');
         $this->setDescription('Parses the entries and append it to ' . $this->filesystem->getChangelogPath());
 
         $this->addArgument('headline', InputArgument::REQUIRED, 'The changelog headline');
