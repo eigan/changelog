@@ -50,7 +50,7 @@ class EntryCollector
 
         // TODO: Should probably be somewhere else
         $typeOrder = [
-            'new', 'fix', 'security', 'other'
+            'security', 'new', 'fix', 'other'
         ];
 
         usort($entries, function ($firstEntry, $secondEntry) use ($typeOrder) {

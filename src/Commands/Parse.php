@@ -80,7 +80,7 @@ class Parse extends Command
 
         $continue = $io->askQuestion(new ConfirmationQuestion('Is this ok?'));
 
-        if ($continue === false) {
+        if ($continue == false) {
             return;
         }
         
