@@ -56,6 +56,11 @@ class Entry
         return $this->all['type'] ?? null;
     }
 
+    public function getAuthor(): ?string
+    {
+        return $this->all['author'] ?? null;
+    }
+
     public function toArray(): array
     {
         return $this->all;
