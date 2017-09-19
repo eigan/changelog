@@ -38,9 +38,12 @@ class EntryCollector
         $files = $this->filesystem->getEntryContents();
 
         foreach ($files as $file) {
-            $log = $this->parseLogEntry($file['content']);
-
-            $entry = new Entry($file['filename'], $log);
+            try {
+                $entry = $this->handler->parse($file['filename'], $file['content']);
+            } catch (\RuntimeException $e) {
+                // TODO LOG
+                continue;
+            }
 
             $entries[] = $entry;
         }
@@ -58,23 +61,5 @@ class EntryCollector
         });
 
         return $entries;
-    }
-
-    /**
-     * Parse a single log entry (only yml)
-     *
-     * @param  string $content
-     * @return array
-     */
-    private function parseLogEntry(string $content): array
-    {
-        return array_merge(
-            [
-                'title' => '',
-                'type' => '',
-                'author' => '',
-            ],
-            $this->handler->parse($content)
-        );
     }
 }

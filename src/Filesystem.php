@@ -79,9 +79,15 @@ class Filesystem
                 continue;
             }
 
+            $content = file_get_contents($this->entriesPath . '/' . $file->getFilename());
+
+            if (empty($content)) {
+                continue;
+            }
+
             $fileContents[] = [
                 'filename' => $file->getFilename(),
-                'content' => file_get_contents($this->entriesPath . '/' . $file->getFilename())
+                'content' => $content
             ];
         }
 

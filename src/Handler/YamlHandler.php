@@ -11,11 +11,27 @@ class YamlHandler implements IEntryFileHandler
     {
         $properties = $entry->toArray();
 
-        return Yaml::dump($properties);
+        return "---\n" . Yaml::dump($properties);
     }
 
-    public function parse(string $content): array
+    /**
+     * Creates an Entry by the content of an entry file
+     *
+     * @param string $name
+     * @param string $content
+     *
+     * @throws \RuntimeException
+     *
+     * @return Entry
+     */
+    public function parse(string $name, string $content): Entry
     {
-        return Yaml::parse($content);
+        $properties = Yaml::parse($content);
+
+        if (is_array($properties) === false) {
+            throw new \RuntimeException('Invalid entry data. Got: ' . $content);
+        }
+
+        return new Entry($name, $properties);
     }
 }
