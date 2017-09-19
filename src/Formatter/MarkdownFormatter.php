@@ -3,18 +3,18 @@
 namespace Logg\Formatter;
 
 use Logg\Entry\Entry;
-use Logg\Entry\IEntryReferenceProvider;
+use Logg\Remotes\IRemote;
 
 class MarkdownFormatter implements IFormatter
 {
     /**
-     * @var IEntryReferenceProvider
+     * @var IRemote
      */
-    private $referenceProvider;
+    private $remote;
     
-    public function __construct(IEntryReferenceProvider $referenceProvider)
+    public function __construct(IRemote $remote = null)
     {
-        $this->referenceProvider = $referenceProvider;
+        $this->remote = $remote;
     }
 
     /**
@@ -45,9 +45,9 @@ class MarkdownFormatter implements IFormatter
 
         $line .= $entry->getTitle();
 
-        if ($entry->getReference()) {
-            $referenceUrl = $this->referenceProvider->getReferenceUrl($entry->getReference());
-            $referenceText = $this->referenceProvider->getReferenceText($entry->getReference());
+        if ($entry->getReference() && $this->remote) {
+            $referenceUrl = $this->remote->getReferenceUrl($entry);
+            $referenceText = $this->remote->getReferenceText($entry);
 
             if ($referenceUrl && $referenceText) {
                 $line .= " [$referenceText]($referenceUrl)";

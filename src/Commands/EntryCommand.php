@@ -3,10 +3,10 @@
 namespace Logg\Commands;
 
 use Logg\Entry\Entry;
-use Logg\Entry\IEntryReferenceProvider;
 use Logg\Filesystem;
 use Logg\GitRepository;
 use Logg\Handler\IEntryFileHandler;
+use Logg\Remotes\IRemote;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,22 +35,22 @@ class EntryCommand extends Command
     private $repository;
 
     /**
-     * @var IEntryReferenceProvider
+     * @var ?IRemote
      */
-    private $referenceProvider;
+    private $remote;
     
     public function __construct(
         IEntryFileHandler $handler,
         Filesystem $filesystem,
         GitRepository $repository,
-        IEntryReferenceProvider $referenceProvider
+        IRemote $remote = null
     ) {
         parent::__construct();
 
         $this->handler = $handler;
         $this->filesystem = $filesystem;
         $this->repository = $repository;
-        $this->referenceProvider = $referenceProvider;
+        $this->remote = $remote;
     }
 
     public function configure()
@@ -71,7 +71,11 @@ class EntryCommand extends Command
         $title = $this->askForTitle($input, $io);
         $type = $this->askForType($input, $io);
         $author = $this->askForAuthor($input, $io);
-        $reference = $this->askForReference($input, $io);
+        $reference = '';
+        
+        if ($this->remote) {
+            $reference = $this->askForReference($input, $io);
+        }
         $name = $this->askForName($input, $io);
         
 
@@ -159,6 +163,6 @@ class EntryCommand extends Command
     
     private function askForReference(InputInterface $input, OutputStyle $output)
     {
-        return $this->referenceProvider->askForReference($output, '');
+        return $this->remote->askForReference($output, '');
     }
 }

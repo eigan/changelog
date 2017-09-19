@@ -47,19 +47,7 @@ class EntryCollector
 
             $entries[] = $entry;
         }
-
-        // TODO: Should probably be somewhere else
-        $typeOrder = [
-            'security', 'new', 'fix', 'other'
-        ];
-
-        usort($entries, function ($firstEntry, $secondEntry) use ($typeOrder) {
-            $firstIndex = array_search($firstEntry->getType(), $typeOrder) ?? 10;
-            $secondIndex = array_search($secondEntry->getType(), $typeOrder) ?? 10;
-
-            return $firstIndex - $secondIndex;
-        });
-
+        
         return $entries;
     }
 }

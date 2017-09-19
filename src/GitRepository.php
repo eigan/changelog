@@ -34,4 +34,54 @@ class GitRepository
     {
         return exec('cd '.$this->rootPath.' && git log -1 --pretty=format:\'%an\'');
     }
+
+    /**
+     * The repository host (gitlab.com)
+     */
+    public function getHost()
+    {
+        $remotes = exec('cd '.$this->rootPath.' && git remote -v');
+        preg_match('/@(\w.+):/', $remotes, $matches);
+        
+        if (isset($matches[1])) {
+            return $matches[1];
+        }
+        
+        return null;
+    }
+    
+    public function getProject()
+    {
+        $remotes = exec('cd '.$this->rootPath.' && git remote -v');
+        preg_match('/\:(\w.+)\.git/', $remotes, $matches);
+        
+        if (isset($matches[1])) {
+            return $matches[1];
+        }
+        
+        return null;
+    }
+    
+    public function getAllMerges(string $since): array
+    {
+        exec('cd '.$this->rootPath.' && git log --merges '.$since.'...HEAD', $lines);
+
+        $i = -1;
+        $commits = [];
+        $commit = [];
+        
+        while (++$i > -1 && isset($lines[$i])) {
+            $line = $lines[$i];
+            
+            if (strpos($line, 'commit ') === 0 && empty($commit) === false) {
+                $commits[] = $commit;
+                $commit = [];
+            }
+            
+            
+            $commit[] = $line;
+        }
+        
+        return $commits;
+    }
 }

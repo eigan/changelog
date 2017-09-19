@@ -55,6 +55,11 @@ class Entry
     {
         return $this->all['type'] ?? null;
     }
+    
+    public function setType(string $type): void
+    {
+        $this->all['type'] = $type;
+    }
 
     public function getAuthor(): ?string
     {

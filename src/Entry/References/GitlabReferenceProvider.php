@@ -14,7 +14,7 @@ class GitlabReferenceProvider implements IEntryReferenceProvider
     
     public function getReferenceText($reference)
     {
-        return "!$reference";
+        return '!' . $reference;
     }
     
     public function getReferenceUrl($reference)
