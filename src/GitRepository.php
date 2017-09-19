@@ -29,4 +29,9 @@ class GitRepository
 
         return null;
     }
+    
+    public function getLastCommitAuthor(): ?string
+    {
+        return exec('cd '.$this->rootPath.' && git log -1 --pretty=format:\'%an\'');
+    }
 }

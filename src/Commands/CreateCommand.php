@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CreateCommand extends Command
@@ -56,34 +57,17 @@ class CreateCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $type = $input->getOption('type');
-        $title = $input->getArgument('title') ?? $this->repository->getLastCommitMessage();
-        $name = $input->getOption('name') ?? $this->repository->getCurrentBranchName();
-
         $io = new SymfonyStyle($input, $output);
 
-        if (empty($type) || in_array($type, Entry::TYPES, true)) {
-            $choice = new ChoiceQuestion(
-                'Please specify the type of change',
-                [
-                    '1' => 'new',
-                    '2' => 'fix',
-                    '3' => 'security',
-                    '0' => 'none'
-                ]
-            );
-
-            $type = $io->askQuestion($choice);
-
-            if ($type === 'none') {
-                $type = '';
-            }
-        }
+        $title = $this->askForTitle($input, $io);
+        $type = $this->askForType($input, $io);
+        $author = $this->askForAuthor($input, $io);
+        $name = $this->askForName($input, $io);
 
         $entry = new Entry($name, [
             'title' => $title,
             'type' => $type,
-            'author' => $input->getOption('author') ?? ''
+            'author' => $author
         ]);
 
         $content = $this->handler->transform($entry);
@@ -93,10 +77,71 @@ class CreateCommand extends Command
         $io->note('Write: ' . $this->filesystem->getEntriesPath() . '/'. $entry->getName(). '.' . $this->handler->getExtension());
 
         $io->write($content);
-        
+
         $io->writeln('');
         $io->askQuestion(new ConfirmationQuestion('Is this ok?'));
 
         $this->filesystem->writeEntry($entry);
+    }
+    
+    private function askForTitle(InputInterface $input, OutputStyle $output)
+    {
+        $title = $input->getArgument('title') ?? $this->repository->getLastCommitMessage();
+        
+        return $output->ask('Title', $title);
+    }
+    
+    private function askForType(InputInterface $input, OutputStyle $output)
+    {
+        // TODO: Resolve from commit message
+        $default = $input->getOption('type');
+
+        $choice = new ChoiceQuestion(
+            'Please specify the type of change',
+            [
+                '1' => 'new',
+                '2' => 'fix',
+                '3' => 'security',
+                '0' => 'none'
+            ],
+            $default
+        );
+        
+        $choice->setValidator(function ($selected) {
+            return $selected ?? '';
+        });
+
+        $type = $output->askQuestion($choice);
+
+        if ($type === 'none') {
+            $type = '';
+        }
+
+        return $type;
+    }
+
+    private function askForAuthor(InputInterface $input, OutputStyle $output)
+    {
+        $default = $input->getOption('author') ?? $this->repository->getLastCommitAuthor();
+
+        return $output->ask('Author', $default);
+    }
+
+    private function askForName(InputInterface $input, OutputStyle $output)
+    {
+        $default = $input->getOption('name') ?? $this->repository->getCurrentBranchName();
+        
+        while (file_exists($this->filesystem->getEntriesPath() . '/' . $default . '.' . $this->handler->getExtension())) {
+            $output->note("Entry with name '$default' exists, please type other");
+            $default = $output->ask('Save in changelogs/ as', $default, function ($typed) {
+                if (strpos($typed, ' ') !== false) {
+                    throw new \InvalidArgumentException('No spaces allowed');
+                }
+                
+                return $typed;
+            });
+        }
+        
+        return $default;
     }
 }
