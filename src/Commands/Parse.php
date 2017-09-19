@@ -41,18 +41,18 @@ class Parse extends Command
         LogMerger $logMerger,
         IFormatter $formatter
     ) {
-        parent::__construct();
-
         $this->filesystem = $filesystem;
         $this->collector = $collector;
         $this->merger = $logMerger;
         $this->formatter = $formatter;
+        
+        parent::__construct();
     }
 
     protected function configure()
     {
         $this->setName('parse');
-        $this->setDescription('Parses the entries and append it to CHANGELOG.md');
+        $this->setDescription('Parses the entries and append it to ' . $this->filesystem->getChangelogPath());
 
         $this->addArgument('headline', InputArgument::REQUIRED, 'The changelog headline');
     }
