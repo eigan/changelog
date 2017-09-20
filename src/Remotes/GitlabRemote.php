@@ -52,6 +52,10 @@ class GitlabRemote implements IRemote
                 $entry->setType($label);
             }
         }
+        
+        if (isset($merge['title'])) {
+            $entry->setTitle($merge['title']);
+        }
     }
 
     /**
@@ -93,7 +97,6 @@ class GitlabRemote implements IRemote
         $curl = $this->makeApiRequest();
         
         curl_setopt($curl, CURLOPT_URL, $this->getApiUrl() . '/merge_requests/' . $reference . '?private_token=' . $this->token);
-        
         $server_output = curl_exec($curl);
         
         return json_decode($server_output, true);

@@ -154,11 +154,9 @@ class Application extends \Symfony\Component\Console\Application
             new EntryCommand($this->handler, $this->filesystem, $this->repository, $this->remote),
             new ReleaseCommand(
                 $this->filesystem,
-                new EntryCollector($this->filesystem, $this->handler),
+                new EntryCollector($this->filesystem, $this->handler, $this->repository, $this->remote),
                 new LogMerger($this->filesystem, $this->formatter),
-                $this->formatter,
-                $this->repository,
-                $this->remote
+                $this->formatter
             )
         ];
 
