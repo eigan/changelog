@@ -64,7 +64,7 @@ class GitRepository
     
     public function getAllMerges(string $since): array
     {
-        exec('cd '.$this->rootPath.' && git log --merges '.$since.'...HEAD', $lines);
+        exec('cd '.$this->rootPath.' && git log --merges '.$since.'...HEAD --no-color', $lines);
 
         $i = -1;
         $commits = [];
