@@ -111,15 +111,17 @@ class EntryCommand extends Command
     {
         // TODO: Resolve from commit message
         $default = $input->getOption('type');
-
+        
+        $types = [
+            '1' => 'new',
+            '2' => 'fix',
+            '3' => 'security',
+            '0' => 'none'
+        ];
+        
         $choice = new ChoiceQuestion(
             'Please specify the type of change',
-            [
-                '1' => 'new',
-                '2' => 'fix',
-                '3' => 'security',
-                '0' => 'none'
-            ],
+            $types,
             $default
         );
         
@@ -132,7 +134,11 @@ class EntryCommand extends Command
         if ($type === 'none') {
             $type = '';
         }
-
+        
+        if (is_numeric($type)) {
+            return $types[$type];
+        }
+        
         return $type;
     }
 
