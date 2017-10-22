@@ -13,7 +13,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -78,7 +77,6 @@ class EntryCommand extends Command
         }
         $name = $this->askForName($input, $io);
         
-
         $entry = new Entry($name, [
             'title' => $title,
             'type' => $type,
@@ -95,9 +93,9 @@ class EntryCommand extends Command
         $io->write($content);
 
         $io->writeln('');
-        $io->askQuestion(new ConfirmationQuestion('Is this ok?'));
-
-        $this->filesystem->writeEntry($entry);
+        if ($io->confirm('Is this ok?')) {
+            $this->filesystem->writeEntry($entry);
+        }
     }
     
     private function askForTitle(InputInterface $input, OutputStyle $output)
