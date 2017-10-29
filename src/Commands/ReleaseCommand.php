@@ -80,7 +80,7 @@ class ReleaseCommand extends Command
         if (empty($entries)) {
             $output->writeln('No entries to append');
 
-            return;
+            exit(1);
         }
 
         $content = $this->formatter->format($input->getArgument('headline'), $entries);
@@ -95,7 +95,7 @@ class ReleaseCommand extends Command
         $continue = $io->askQuestion(new ConfirmationQuestion('Is this ok?'));
 
         if ($continue == false) {
-            return;
+            exit(1);
         }
         
         $this->merger->append($input->getArgument('headline'), $entries);
