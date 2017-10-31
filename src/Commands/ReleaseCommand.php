@@ -99,7 +99,7 @@ class ReleaseCommand extends Command
             exit(1);
         }
         
-        $this->merger->append($input->getArgument('headline'), $entries);
+        $this->merger->append($content);
 
         $this->filesystem->cleanup();
     }

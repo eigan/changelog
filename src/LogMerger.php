@@ -33,10 +33,8 @@ class LogMerger
      * @param string $headline
      * @param array  $entries
      */
-    public function append(string $headline, array $entries): void
+    public function append(string $content): void
     {
-        $content = $this->formatter->format($headline, $entries);
-
         // The formatter should append content
         $entireContent = $content . "\n";
 
