@@ -18,14 +18,16 @@ class MarkdownFormatter implements IFormatter
     }
 
     /**
-     * @param string  $headline
-     * @param Entry[] $entries
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function format(string $headline, array $entries): string
+    public function format(string $headline, array $entries, array $options): string
     {
-        $content = '### ' . $headline . "\n";
+        $content = '#### ' . $headline . "\n";
+        
+        if ($options['minor']) {
+            // Reset header to subheader
+            $content = '### ' . $headline . "\n";
+        }
 
         foreach ($entries as $entry) {
             $content .= $this->formatEntry($entry) . "\n";

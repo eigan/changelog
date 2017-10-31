@@ -69,6 +69,7 @@ class ReleaseCommand extends Command
 
         $this->addArgument('headline', InputArgument::REQUIRED, 'The changelog headline');
         $this->addOption('since', '', InputOption::VALUE_OPTIONAL);
+        $this->addOption('minor', '', InputOption::VALUE_NONE, 'Set as minor release');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -83,13 +84,13 @@ class ReleaseCommand extends Command
             exit(1);
         }
 
-        $content = $this->formatter->format($input->getArgument('headline'), $entries);
+        $content = $this->formatter->format($input->getArgument('headline'), $entries, [
+            'minor' => $input->getOption('minor')
+        ]);
 
         $io->note('Append to: ' . $this->filesystem->getChangelogPath());
 
-        $output->writeln('---');
         $output->write($content);
-        $output->writeln('---');
         $output->writeln('');
 
         $continue = $io->askQuestion(new ConfirmationQuestion('Is this ok?'));
