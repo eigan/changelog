@@ -118,12 +118,8 @@ class Filesystem
      */
     public function cleanup(): void
     {
-        foreach (new \DirectoryIterator($this->entriesPath) as $file) {
-            if ($file->isDot()) {
-                continue;
-            }
-
-            unlink($this->entriesPath.'/'.$file);
+        foreach ($this->getEntryContents() as $entryContent) {
+            unlink($this->entriesPath.'/'.$entryContent['filename']);
         }
     }
 }
