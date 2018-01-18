@@ -1,3 +1,5 @@
+[![pipeline status](https://gitlab.com/eigan/changelog/badges/master/pipeline.svg)](https://gitlab.com/eigan/changelog/commits/master)
+
 ### Changelog generator
 
 #### Manually adding a new changelog entry

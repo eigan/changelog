@@ -21,9 +21,9 @@ cache:
   paths:
   - vendor/
 
-# PHP 5.5
-php:7.0:
-  image: php:7.0
+# 
+php:7.1:
+  image: php:7.1
   script:
     - php vendor/bin/phpstan analyse --no-progress -l 1 src -c phpstan.neon
     - echo "Running PHPUnit Tests"

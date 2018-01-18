@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "07ae3b062b43c3acc6925a136cb62e88",
+    "content-hash": "27868cd9029cdc298107adfbac70c39e",
     "packages": [
         {
             "name": "symfony/console",
@@ -2548,5 +2548,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "platform-overrides": {
+        "php": "7.1.3"
+    }
 }
