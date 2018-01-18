@@ -35,7 +35,7 @@ class EntryCommandTest extends TestCase
     {
         $this->execute([
             'title' => 'My entry title',
-            '--type' => 'fix',
+            '--type' => '2',
             '--author' => 'EG',
             '--name' => 'entry-file'
         ]);
@@ -54,7 +54,7 @@ reference: ''
     {
         $this->execute([], [], [
             'My entry title',
-            'fix',
+            '2',
             'EG',
             'entry-file',
             'Y'
