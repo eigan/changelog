@@ -1,4 +1,6 @@
 [![pipeline status](https://gitlab.com/eigan/changelog/badges/master/pipeline.svg)](https://gitlab.com/eigan/changelog/commits/master)
+[![coverage report](https://gitlab.com/eigan/changelog/badges/master/coverage.svg)](https://gitlab.com/eigan/changelog/commits/master)
+
 
 ### Changelog generator
 
