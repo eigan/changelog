@@ -1,6 +1,6 @@
 {
     "name": "eigan/changelog",
-    "type": "library",
+    "type": "project",
     "bin": [
       "bin/changelog"
     ],
@@ -11,14 +11,14 @@
 
     "require": {
         "symfony/console": "^4.0",
-        "symfony/yaml": "^4.0",
-        "phpstan/phpstan": "^0.9.1"
+        "symfony/yaml": "^4.0"
     },
 
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.8",
         "phpunit/phpunit": "^6.5",
-        "mikey179/vfsStream": "^1.6"
+        "mikey179/vfsStream": "^1.6",
+        "phpstan/phpstan": "^0.9.1"
     },
 
     "autoload": {
