@@ -1,7 +1,7 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->in([__DIR__ . '/src', __DIR__ . '/bin']);
+    ->in([__DIR__ . '/src', __DIR__ . '/bin', __DIR__ . '/tests']);
 
 return PhpCsFixer\Config::create()->setRules([
     '@PSR2' => true,

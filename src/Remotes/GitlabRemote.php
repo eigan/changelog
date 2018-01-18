@@ -102,6 +102,20 @@ class GitlabRemote implements IRemote
         return json_decode($server_output, true);
     }
     
+    public function getSuggestedMergeRequest()
+    {
+        $curl = $this->makeApiRequest();
+
+        curl_setopt($curl, CURLOPT_URL, $this->getApiUrl() . '/merge_requests/?private_token=' . $this->token . '&state=opened');
+        $server_output = curl_exec($curl);
+
+        $mergeRequests = json_decode($server_output, true);
+        
+        foreach ($mergeRequests as $mergeRequest) {
+            // If target branch same as current..
+        }
+    }
+    
     private function makeApiRequest()
     {
         $curl = curl_init();

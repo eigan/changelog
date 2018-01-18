@@ -78,7 +78,6 @@ class GitRepository
                 $commit = [];
             }
             
-            
             $commit[] = $line;
         }
         

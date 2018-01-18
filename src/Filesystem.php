@@ -2,7 +2,6 @@
 
 namespace Logg;
 
-use InvalidArgumentException;
 use Logg\Entry\Entry;
 use Logg\Handler\IEntryFileHandler;
 
@@ -25,23 +24,13 @@ class Filesystem
 
     /**
      * Filesystem constructor.
-     *
-     * @param string $changelogPath
-     * @param string $entriesPath
-     *
+     * @param Configuration     $configuration
+     * @param IEntryFileHandler $handler
      */
-    public function __construct(string $changelogPath, string $entriesPath, IEntryFileHandler $handler)
+    public function __construct(Configuration $configuration, IEntryFileHandler $handler)
     {
-        if (file_exists($changelogPath) === false) {
-            throw new InvalidArgumentException('Invalid changelog path');
-        }
-
-        if (is_writable($entriesPath) === false) {
-            throw new InvalidArgumentException(('Entries path should be writeable'));
-        }
-
-        $this->changelogPath = $changelogPath;
-        $this->entriesPath = $entriesPath;
+        $this->changelogPath = $configuration->getChangelogFilePath();
+        $this->entriesPath = $configuration->getEntriesPath();
         $this->handler = $handler;
     }
 
@@ -62,6 +51,8 @@ class Filesystem
      */
     public function appendChangelog(string $content): void
     {
+        $this->createChangelog();
+        
         $content .= file_get_contents($this->changelogPath);
 
         file_put_contents($this->changelogPath, $content);
@@ -73,6 +64,10 @@ class Filesystem
     public function getEntryContents(): array
     {
         $fileContents = [];
+        
+        if (file_exists($this->entriesPath) === false) {
+            return [];
+        }
         
         foreach (new \DirectoryIterator($this->entriesPath) as $file) {
             if ($file->isDot()) {
@@ -101,6 +96,8 @@ class Filesystem
      */
     public function writeEntry(Entry $entry): void
     {
+        $this->createEntriesPath();
+        
         $path = $this->entriesPath .'/'. $entry->getName() . '.' . $this->handler->getExtension();
         $content = $this->handler->transform($entry);
 
@@ -121,5 +118,23 @@ class Filesystem
         foreach ($this->getEntryContents() as $entryContent) {
             unlink($this->entriesPath.'/'.$entryContent['filename']);
         }
+    }
+    
+    private function createChangelog(): void
+    {
+        if (file_exists($this->changelogPath) === true) {
+            return;
+        }
+        
+        touch($this->changelogPath);
+    }
+    
+    private function createEntriesPath(): void
+    {
+        if (file_exists($this->entriesPath) === true) {
+            return;
+        }
+        
+        mkdir($this->entriesPath, 0744, true);
     }
 }

@@ -151,15 +151,23 @@ class EntryCommand extends Command
     {
         $default = $input->getOption('name') ?? $this->repository->getCurrentBranchName();
         
-        while (file_exists($this->filesystem->getEntriesPath() . '/' . $default . '.' . $this->handler->getExtension())) {
-            $output->note("Entry with name '$default' exists, please type other");
-            $default = $output->ask('Save in changelogs/ as', $default, function ($typed) {
+        $ask = function () use ($output, $default) {
+            return $output->ask('Save in changelogs/ as', $default, function ($typed) {
                 if (strpos($typed, ' ') !== false) {
                     throw new \InvalidArgumentException('No spaces allowed');
                 }
-                
+
                 return $typed;
             });
+        };
+        
+        if (empty($default)) {
+            $default = $ask();
+        }
+        
+        while (file_exists($this->filesystem->getEntriesPath() . '/' . $default . '.' . $this->handler->getExtension())) {
+            $output->note("Entry with name '$default' exists, please type other");
+            $default = $ask();
         }
         
         return $default;
