@@ -70,33 +70,46 @@ class ReleaseCommand extends Command
         $this->addArgument('headline', InputArgument::REQUIRED, 'The changelog headline');
         $this->addOption('since', '', InputOption::VALUE_OPTIONAL);
         $this->addOption('minor', '', InputOption::VALUE_NONE, 'Set as minor release');
+        $this->addOption('preview', '', InputOption::VALUE_NONE, 'Preview and exit');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $isPreview = $input->getOption('preview');
+        
         $io = new SymfonyStyle($input, $output);
 
         $entries = $this->collector->collect($input->getOption('since'));
         
         if (empty($entries)) {
-            $output->writeln('No entries to append');
-
+            if ($isPreview === false) {
+                $output->writeln('No entries to append');
+            }
+            
             exit(1);
         }
 
         $content = $this->formatter->format($input->getArgument('headline'), $entries, [
             'minor' => $input->getOption('minor')
         ]);
-
-        $io->note('Append to: ' . $this->filesystem->getChangelogPath());
+        
+        if ($isPreview === false) {
+            $io->note('Append to: ' . $this->filesystem->getChangelogPath());
+        }
 
         $output->write($content);
-        $output->writeln('');
-
-        $continue = $io->askQuestion(new ConfirmationQuestion('Is this ok?'));
+        if ($isPreview === false) {
+            $output->writeln('');
+        }
+        
+        $continue = false;
+        
+        if ($isPreview === false) {
+            $continue = $io->askQuestion(new ConfirmationQuestion('Is this ok?'));
+        }
 
         if ($continue === false) {
-            exit(1);
+            return 0;
         }
         
         $this->merger->append($content);

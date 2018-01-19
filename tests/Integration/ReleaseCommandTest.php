@@ -45,6 +45,18 @@ class ReleaseCommandTest extends TestCase
 ');
     }
 
+    public function testPreview()
+    {
+        $output = $this->execute([
+            'headline' => '1.0',
+            '--preview' => true
+        ]);
+        
+        $this->assertEquals($output, '#### 1.0
+* [fix] My entry title (EG)
+');
+    }
+
     /**
      * @param  array              $structure
      * @return vfsStreamDirectory
