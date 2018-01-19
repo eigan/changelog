@@ -5,20 +5,10 @@ namespace Logg;
 use Logg\Commands\EntryCommand;
 use Logg\Commands\ReleaseCommand;
 use Logg\Entry\EntryCollector;
-use Logg\Entry\IEntryReferenceProvider;
 use Logg\Formatter\IFormatter;
-use Logg\Formatter\MarkdownFormatter;
 use Logg\Handler\IEntryFileHandler;
 use Logg\Handler\YamlHandler;
-use Logg\Remotes\GitlabRemote;
 use Logg\Remotes\IRemote;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 class Application extends \Symfony\Component\Console\Application
 {
@@ -38,7 +28,7 @@ class Application extends \Symfony\Component\Console\Application
     private $handler;
 
     /**
-     * @var Configuration 
+     * @var Configuration
      */
     private $config;
 
@@ -54,14 +44,14 @@ class Application extends \Symfony\Component\Console\Application
     
     public function __construct(string $rootPath)
     {
-        parent::__construct('Log generator', 'dev');
-        
         $this->repository = new GitRepository($rootPath);
-        
+
         $this->handler = new YamlHandler();
         $this->config = new Configuration($rootPath, $this->repository);
-        
+
         $this->filesystem = new Filesystem($this->config, $this->handler);
+        
+        parent::__construct('Log generator', 'dev');
     }
     
     private function getRepository()
@@ -71,7 +61,7 @@ class Application extends \Symfony\Component\Console\Application
     
     private function getRemote()
     {
-        if(!$this->remote) {
+        if (!$this->remote) {
             return $this->config->getConfiguredRemote();
         }
         
@@ -80,13 +70,12 @@ class Application extends \Symfony\Component\Console\Application
     
     public function getFormatter()
     {
-        if(!$this->formatter) {
+        if (!$this->formatter) {
             return $this->formatter = $this->config->getConfiguredFormatter();
         }
         
         return $this->formatter;
     }
-    
 
     protected function getDefaultCommands()
     {
