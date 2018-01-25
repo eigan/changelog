@@ -152,7 +152,7 @@ class EntryCommand extends Command
         $default = $input->getOption('name') ?? $this->repository->getCurrentBranchName();
         
         $ask = function () use ($output, $default) {
-            return $output->ask('Save in changelogs/ as', $default, function ($typed) {
+            return $output->ask('Save in ' . $this->filesystem->getEntriesPath() . '/ as', $default, function ($typed) {
                 if (strpos($typed, ' ') !== false) {
                     throw new \InvalidArgumentException('No spaces allowed');
                 }
