@@ -23,6 +23,6 @@ cache:
 php:7.1:
   image: php:7.1
   script:
-    - php vendor/bin/phpstan analyse --no-progress -l 1 src
+    - php vendor/bin/phpstan analyse --no-progress -l 7 src
     - echo "Running PHPUnit Tests"
     - php vendor/bin/phpunit --colors="never" --coverage-text
