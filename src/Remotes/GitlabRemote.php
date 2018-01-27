@@ -45,7 +45,13 @@ class GitlabRemote implements IRemote
      */
     public function decorate(Entry $entry)
     {
-        $merge = $this->getMergeRequest($entry->getReference());
+        $reference = $entry->getReference();
+        
+        if ($reference === null) {
+            return;
+        }
+        
+        $merge = $this->getMergeRequest($reference);
         
         foreach ($merge['labels'] as $label) {
             if (in_array($label, Entry::TYPES)) {

@@ -8,7 +8,7 @@ use Logg\Remotes\IRemote;
 class MarkdownFormatter implements IFormatter
 {
     /**
-     * @var IRemote
+     * @var null|IRemote
      */
     private $remote;
     

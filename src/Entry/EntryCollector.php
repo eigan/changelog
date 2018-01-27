@@ -26,7 +26,7 @@ class EntryCollector
     private $repository;
 
     /**
-     * @var IRemote
+     * @var null|IRemote
      */
     private $remote;
 

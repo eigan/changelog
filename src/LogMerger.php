@@ -29,9 +29,7 @@ class LogMerger
 
     /**
      * Formats the entries and append it to the changelog
-     *
-     * @param string $headline
-     * @param array  $entries
+     * @param string $content
      */
     public function append(string $content): void
     {

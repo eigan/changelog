@@ -13,7 +13,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 class EntryCommand extends Command
@@ -73,8 +72,9 @@ class EntryCommand extends Command
         $reference = '';
         
         if ($this->remote) {
-            $reference = $this->askForReference($input, $io);
+            $reference = $this->remote->askForReference($io, '');
         }
+        
         $name = $this->askForName($input, $io);
         
         $entry = new Entry($name, [
@@ -98,14 +98,14 @@ class EntryCommand extends Command
         }
     }
     
-    private function askForTitle(InputInterface $input, OutputStyle $output)
+    private function askForTitle(InputInterface $input, SymfonyStyle $output)
     {
         $title = $input->getArgument('title') ?? $this->repository->getLastCommitMessage();
         
         return $output->ask('Title', $title);
     }
     
-    private function askForType(InputInterface $input, OutputStyle $output)
+    private function askForType(InputInterface $input, SymfonyStyle $output)
     {
         // TODO: Resolve from commit message
         $default = $input->getOption('type');
@@ -140,14 +140,14 @@ class EntryCommand extends Command
         return $type;
     }
 
-    private function askForAuthor(InputInterface $input, OutputStyle $output)
+    private function askForAuthor(InputInterface $input, SymfonyStyle $output)
     {
         $default = $input->getOption('author') ?? $this->repository->getLastCommitAuthor();
 
         return $output->ask('Author', $default);
     }
 
-    private function askForName(InputInterface $input, OutputStyle $output)
+    private function askForName(InputInterface $input, SymfonyStyle $output)
     {
         $default = $input->getOption('name') ?? $this->repository->getCurrentBranchName();
         
@@ -171,10 +171,5 @@ class EntryCommand extends Command
         }
         
         return $default;
-    }
-    
-    private function askForReference(InputInterface $input, OutputStyle $output)
-    {
-        return $this->remote->askForReference($output, '');
     }
 }
