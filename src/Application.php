@@ -8,7 +8,6 @@ use Logg\Entry\EntryCollector;
 use Logg\Formatter\IFormatter;
 use Logg\Handler\IEntryFileHandler;
 use Logg\Handler\YamlHandler;
-use Logg\Remotes\IRemote;
 
 class Application extends \Symfony\Component\Console\Application
 {
@@ -33,11 +32,6 @@ class Application extends \Symfony\Component\Console\Application
     private $config;
 
     /**
-     * @var ?IRemote
-     */
-    private $remote;
-
-    /**
      * @var IFormatter
      */
     private $formatter;
@@ -47,7 +41,7 @@ class Application extends \Symfony\Component\Console\Application
         $this->repository = new GitRepository($rootPath);
 
         $this->handler = new YamlHandler();
-        $this->config = new Configuration($rootPath, $this->repository);
+        $this->config = new Configuration($rootPath);
 
         $this->filesystem = new Filesystem($this->config, $this->handler);
         
@@ -57,15 +51,6 @@ class Application extends \Symfony\Component\Console\Application
     private function getRepository()
     {
         return $this->repository;
-    }
-    
-    private function getRemote()
-    {
-        if (!$this->remote) {
-            return $this->config->getConfiguredRemote();
-        }
-        
-        return $this->remote;
     }
     
     public function getFormatter()
@@ -83,11 +68,11 @@ class Application extends \Symfony\Component\Console\Application
 
         $own = [
             
-            new EntryCommand($this->handler, $this->filesystem, $this->getRepository(), $this->getRemote()),
+            new EntryCommand($this->handler, $this->filesystem, $this->getRepository()),
             
             new ReleaseCommand(
                 $this->filesystem,
-                new EntryCollector($this->filesystem, $this->handler, $this->getRepository(), $this->getRemote()),
+                new EntryCollector($this->filesystem, $this->handler),
                 new LogMerger($this->filesystem, $this->getFormatter()),
                 $this->getFormatter()
             )

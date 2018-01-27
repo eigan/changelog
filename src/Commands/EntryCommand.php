@@ -6,7 +6,6 @@ use Logg\Entry\Entry;
 use Logg\Filesystem;
 use Logg\GitRepository;
 use Logg\Handler\IEntryFileHandler;
-use Logg\Remotes\IRemote;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,24 +30,17 @@ class EntryCommand extends Command
      * @var GitRepository
      */
     private $repository;
-
-    /**
-     * @var ?IRemote
-     */
-    private $remote;
     
     public function __construct(
         IEntryFileHandler $handler,
         Filesystem $filesystem,
-        GitRepository $repository,
-        IRemote $remote = null
+        GitRepository $repository
     ) {
         parent::__construct();
 
         $this->handler = $handler;
         $this->filesystem = $filesystem;
         $this->repository = $repository;
-        $this->remote = $remote;
     }
 
     public function configure()
@@ -70,10 +62,6 @@ class EntryCommand extends Command
         $type = $this->askForType($input, $io);
         $author = $this->askForAuthor($input, $io);
         $reference = '';
-        
-        if ($this->remote) {
-            $reference = $this->remote->askForReference($io, '');
-        }
         
         $name = $this->askForName($input, $io);
         

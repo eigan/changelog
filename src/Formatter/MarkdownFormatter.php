@@ -3,20 +3,9 @@
 namespace Logg\Formatter;
 
 use Logg\Entry\Entry;
-use Logg\Remotes\IRemote;
 
 class MarkdownFormatter implements IFormatter
 {
-    /**
-     * @var null|IRemote
-     */
-    private $remote;
-    
-    public function __construct(IRemote $remote = null)
-    {
-        $this->remote = $remote;
-    }
-
     /**
      * @inheritdoc
      */
@@ -46,17 +35,6 @@ class MarkdownFormatter implements IFormatter
         }
 
         $line .= $entry->getTitle();
-
-        if ($entry->getReference() && $this->remote) {
-            $referenceUrl = $this->remote->getReferenceUrl($entry);
-            $referenceText = $this->remote->getReferenceText($entry);
-
-            if ($referenceUrl && $referenceText) {
-                $line .= " [$referenceText]($referenceUrl)";
-            } elseif (!$referenceUrl && $referenceText) {
-                $line .= ' ' . $referenceText;
-            }
-        }
         
         if (strlen($entry->getAuthor()) > 0) {
             $line .= ' (' . $entry->getAuthor() . ')';

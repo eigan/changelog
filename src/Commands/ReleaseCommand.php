@@ -5,9 +5,7 @@ namespace Logg\Commands;
 use Logg\Entry\EntryCollector;
 use Logg\Filesystem;
 use Logg\Formatter\IFormatter;
-use Logg\GitRepository;
 use Logg\LogMerger;
-use Logg\Remotes\IRemote;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,16 +35,6 @@ class ReleaseCommand extends Command
      * @var IFormatter
      */
     private $formatter;
-
-    /**
-     * @var GitRepository
-     */
-    private $repository;
-    
-    /**
-     * @var IRemote
-     */
-    private $remote;
     
     public function __construct(
         Filesystem $filesystem,
@@ -68,7 +56,6 @@ class ReleaseCommand extends Command
         $this->setDescription('Parses the entries and append it to ' . $this->filesystem->getChangelogPath());
 
         $this->addArgument('headline', InputArgument::REQUIRED, 'The changelog headline');
-        $this->addOption('since', '', InputOption::VALUE_OPTIONAL);
         $this->addOption('minor', '', InputOption::VALUE_NONE, 'Set as minor release');
         $this->addOption('preview', '', InputOption::VALUE_NONE, 'Preview and exit');
     }
@@ -79,7 +66,7 @@ class ReleaseCommand extends Command
         
         $io = new SymfonyStyle($input, $output);
 
-        $entries = $this->collector->collect($input->getOption('since'));
+        $entries = $this->collector->collect();
         
         if (empty($entries)) {
             if ($isPreview === false) {
