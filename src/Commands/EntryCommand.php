@@ -73,8 +73,8 @@ class EntryCommand extends Command
         $content = $this->handler->transform($entry);
 
         $io->writeln('');
-
-        $io->note('Write: ' . $this->filesystem->getEntriesPath() . '/'. $entry->getName(). '.' . $this->handler->getExtension());
+        
+        $io->note('Write: ' . $entry->getName(). '.' . $this->handler->getExtension());
 
         $io->write($content);
 
@@ -138,7 +138,7 @@ class EntryCommand extends Command
         $default = $input->getOption('name') ?? $this->repository->getCurrentBranchName();
         
         $ask = function () use ($output, $default) {
-            return $output->ask('Save in ' . $this->filesystem->getEntriesPath() . '/ as', $default, function ($typed) {
+            return $output->ask('Save entry as:', $default, function ($typed) {
                 if (strpos($typed, ' ') !== false) {
                     throw new \InvalidArgumentException('No spaces allowed');
                 }
