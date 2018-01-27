@@ -70,11 +70,6 @@ class Entry
     {
         return $this->all['author'] ?? null;
     }
-    
-    public function getReference(): ?string
-    {
-        return $this->all['reference'] ?? null;
-    }
 
     public function toArray(): array
     {

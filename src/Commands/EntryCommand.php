@@ -61,15 +61,13 @@ class EntryCommand extends Command
         $title = $this->askForTitle($input, $io);
         $type = $this->askForType($input, $io);
         $author = $this->askForAuthor($input, $io);
-        $reference = '';
         
         $name = $this->askForName($input, $io);
         
         $entry = new Entry($name, [
             'title' => $title,
             'type' => $type,
-            'author' => $author,
-            'reference' => $reference
+            'author' => $author
         ]);
 
         $content = $this->handler->transform($entry);

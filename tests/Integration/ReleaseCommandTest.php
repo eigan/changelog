@@ -70,7 +70,6 @@ class ReleaseCommandTest extends TestCase
 title: 'My entry title'
 type: fix
 author: EG
-reference: ''
 "
                 ],
                 'CHANGELOG.md' => ''

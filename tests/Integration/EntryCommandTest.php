@@ -46,7 +46,6 @@ class EntryCommandTest extends TestCase
 title: 'My entry title'
 type: fix
 author: EG
-reference: ''
 ");
     }
 
@@ -66,7 +65,6 @@ reference: ''
 title: 'My entry title'
 type: fix
 author: EG
-reference: ''
 ");
     }
     
