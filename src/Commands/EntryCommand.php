@@ -49,7 +49,7 @@ class EntryCommand extends Command
         $this->setDescription('Create log entry');
 
         $this->addArgument('title', InputArgument::OPTIONAL, 'Short description of what changed');
-        $this->addOption('type', 't', InputOption::VALUE_OPTIONAL, 'Fix|new');
+        $this->addOption('type', 't', InputOption::VALUE_OPTIONAL, 'fix|new');
         $this->addOption('author', 'u', InputOption::VALUE_OPTIONAL);
         $this->addOption('name', 'f', InputOption::VALUE_OPTIONAL);
     }
