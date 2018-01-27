@@ -40,7 +40,10 @@ class ReleaseCommandTest extends TestCase
         $changelogPath = $this->testRoot->url() . '/CHANGELOG.md';
         
         $this->assertStringEqualsFile($changelogPath, '#### 1.0
+* [fix] Foo bar (EG)
+* [fix] Foobar! (EG)
 * [fix] My entry title (EG)
+* [new] Abc (EG)
 
 ');
     }
@@ -53,7 +56,10 @@ class ReleaseCommandTest extends TestCase
         ]);
         
         $this->assertEquals($output, '#### 1.0
+* [fix] Foo bar (EG)
+* [fix] Foobar! (EG)
 * [fix] My entry title (EG)
+* [new] Abc (EG)
 ');
     }
 
@@ -68,6 +74,23 @@ class ReleaseCommandTest extends TestCase
                 '.changelogs' => [
                     'my-entry.yml' => "---
 title: 'My entry title'
+type: fix
+author: EG
+",
+
+               'my-entry-2.yml' => "---
+title: 'Foobar!'
+type: fix
+author: EG
+",
+                   
+               'my-entry-3.yml' => "---
+title: 'Abc'
+type: new
+author: EG
+",
+               'my-entry-4.yml' => "---
+title: 'Foo bar'
 type: fix
 author: EG
 "

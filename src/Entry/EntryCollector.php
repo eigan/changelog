@@ -48,11 +48,17 @@ class EntryCollector
             $entries[] = $entry;
         }
 
-        usort($entries, function ($firstEntry, $secondEntry) {
+        usort($entries, function (Entry $firstEntry, Entry $secondEntry) {
             $firstIndex = array_search($firstEntry->getType(), Entry::TYPES, true);
             $firstIndex = $firstIndex === false ? 10 : $firstIndex;
             $secondIndex = array_search($secondEntry->getType(), Entry::TYPES, true);
             $secondIndex = $secondIndex === false ? 10 : $secondIndex;
+            
+            $typeCompare = $firstIndex - $secondIndex;
+            
+            if ($typeCompare === 0) {
+                return strnatcmp($firstEntry->getTitle(), $secondEntry->getTitle());
+            }
             
             return $firstIndex - $secondIndex;
         });
