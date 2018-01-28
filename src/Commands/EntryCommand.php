@@ -102,6 +102,10 @@ class EntryCommand extends Command
             '3' => 'security',
             '0' => 'none'
         ];
+
+        if (is_numeric($default) === false) {
+            $default = array_search($default, $types, true);
+        }
         
         $choice = new ChoiceQuestion(
             'Please specify the type of change',
