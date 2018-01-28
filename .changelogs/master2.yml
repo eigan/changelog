@@ -1,4 +1,0 @@
----
-title: 'Cleanup code a bit. Making sure we pass phpstan level 7'
-type: fix
-author: EG
