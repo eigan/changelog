@@ -64,8 +64,12 @@ class KeepAChangelogFormatter implements IFormatter
         return $groups;
     }
     
-    private function setupGroup(string $type)
+    private function setupGroup(string $type = null)
     {
+        if ($type === null) {
+            $type = 'unknown';
+        }
+        
         return [
             'header' => $this->translateTypeToHeading($type),
             'entries' => [],
