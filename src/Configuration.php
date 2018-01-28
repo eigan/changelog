@@ -4,6 +4,7 @@ namespace Logg;
 
 use Logg\Formatter\IFormatter;
 use Logg\Formatter\MarkdownFormatter;
+use Logg\Formatter\KeepAChangelogFormatter;
 
 class Configuration
 {
@@ -30,6 +31,9 @@ class Configuration
         $config = $this->data['formatter'] ?? 'markdown';
         
         switch ($config) {
+            case 'keep-a-changelog':
+                return new KeepAChangelogFormatter();
+                
             default:
                 return new MarkdownFormatter();
                 break;
