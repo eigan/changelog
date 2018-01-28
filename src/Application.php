@@ -38,7 +38,7 @@ class Application extends \Symfony\Component\Console\Application
     
     public function __construct(string $rootPath)
     {
-        $this->repository = new GitRepository($rootPath);
+        $this->setupRepository($rootPath);
 
         $this->handler = new YamlHandler();
         $this->config = new Configuration($rootPath);
@@ -46,11 +46,6 @@ class Application extends \Symfony\Component\Console\Application
         $this->filesystem = new Filesystem($this->config, $this->handler);
         
         parent::__construct('Log generator', 'dev');
-    }
-    
-    private function getRepository()
-    {
-        return $this->repository;
     }
     
     public function getFormatter()
@@ -68,7 +63,7 @@ class Application extends \Symfony\Component\Console\Application
 
         $own = [
             
-            new EntryCommand($this->handler, $this->filesystem, $this->getRepository()),
+            new EntryCommand($this->handler, $this->filesystem, $this->repository),
             
             new ReleaseCommand(
                 $this->filesystem,
@@ -79,5 +74,12 @@ class Application extends \Symfony\Component\Console\Application
         ];
 
         return array_merge($parent, $own);
+    }
+    
+    private function setupRepository($rootPath)
+    {
+        if (file_exists($rootPath . '/.git')) {
+            $this->repository = new GitRepository($rootPath);
+        }
     }
 }

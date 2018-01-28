@@ -27,14 +27,14 @@ class EntryCommand extends Command
     private $filesystem;
     
     /**
-     * @var GitRepository
+     * @var null|GitRepository
      */
     private $repository;
     
     public function __construct(
         IEntryFileHandler $handler,
         Filesystem $filesystem,
-        GitRepository $repository
+        GitRepository $repository = null
     ) {
         parent::__construct();
 
@@ -86,7 +86,11 @@ class EntryCommand extends Command
     
     private function askForTitle(InputInterface $input, SymfonyStyle $output)
     {
-        $title = $input->getArgument('title') ?? $this->repository->getLastCommitMessage();
+        $title = $input->getArgument('title');
+        
+        if (empty($title) && $this->repository) {
+            $title = $this->repository->getLastCommitMessage();
+        }
         
         return $output->ask('Title', $title);
     }
@@ -132,15 +136,23 @@ class EntryCommand extends Command
 
     private function askForAuthor(InputInterface $input, SymfonyStyle $output)
     {
-        $default = $input->getOption('author') ?? $this->repository->getLastCommitAuthor();
-
+        $default = $input->getOption('author');
+        
+        if (empty($default) && $this->repository) {
+            $default = $this->repository->getLastCommitAuthor();
+        }
+        
         return $output->ask('Author', $default);
     }
 
     private function askForName(InputInterface $input, SymfonyStyle $output)
     {
-        $default = $input->getOption('name') ?? $this->repository->getCurrentBranchName();
-                
+        $default = $input->getOption('name') ?? '';
+        
+        if (empty($default) && $this->repository) {
+            $default = $this->repository->getCurrentBranchName();
+        }
+        
         $ask = function (string $default) use ($output) {
             return $output->ask('Save entry as:', $default, function ($typed) {
                 if (strpos($typed, ' ') !== false) {
