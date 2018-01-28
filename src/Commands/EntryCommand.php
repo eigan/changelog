@@ -140,8 +140,8 @@ class EntryCommand extends Command
     private function askForName(InputInterface $input, SymfonyStyle $output)
     {
         $default = $input->getOption('name') ?? $this->repository->getCurrentBranchName();
-        
-        $ask = function () use ($output, $default) {
+                
+        $ask = function (string $default) use ($output) {
             return $output->ask('Save entry as:', $default, function ($typed) {
                 if (strpos($typed, ' ') !== false) {
                     throw new \InvalidArgumentException('No spaces allowed');
@@ -152,14 +152,31 @@ class EntryCommand extends Command
         };
         
         if (empty($default)) {
-            $default = $ask();
+            $default = $ask($default);
         }
         
         while (file_exists($this->filesystem->getEntriesPath() . '/' . $default . '.' . $this->handler->getExtension())) {
             $output->note("Entry with name '$default' exists, please type other");
-            $default = $ask();
+            
+            $default = $this->uniqueNameSuggestion($default);
+            $default = $ask($default);
         }
         
         return $default;
+    }
+    
+    private function uniqueNameSuggestion(string $nameSuggestion)
+    {
+        $originalNameSuggestion = $nameSuggestion;
+        $entriesPath = $this->filesystem->getEntriesPath();
+        $ext = $this->handler->getExtension();
+        
+        $i = 1;
+        while (file_exists($entriesPath . '/' . $nameSuggestion . '.' . $ext)) {
+            $nameSuggestion = $originalNameSuggestion . '-' . $i;
+            $i++;
+        }
+        
+        return $nameSuggestion;
     }
 }

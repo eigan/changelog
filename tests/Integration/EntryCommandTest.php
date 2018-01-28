@@ -68,6 +68,55 @@ author: EG
 ");
     }
     
+    public function testNameCollision()
+    {
+        $dir = vfsStream::setup('test', null, [
+            '.changelogs' => [
+                'entry-file.yml' => '',
+                'entry-file-1.yml' => ''
+            ]
+        ]);
+
+        $application = new Application($dir->url());
+        $command = $application->find('entry');
+
+        $this->commandTester = new CommandTester($command);
+
+        $this->execute([
+            'title' => 'My entry title',
+            '--type' => '2',
+            '--author' => 'EG',
+            '--name' => 'entry-file'
+        ]);
+        
+        $this->assertFileExists($dir->url() . '/.changelogs/entry-file-2.yml');
+    }
+    
+    public function testShouldCreateChangelogDir()
+    {
+        $dir = vfsStream::setup('test', null, []);
+
+        $application = new Application($dir->url());
+        $command = $application->find('entry');
+
+        $this->commandTester = new CommandTester($command);
+
+        $this->execute([
+            'title' => 'My entry title',
+            '--type' => '2',
+            '--author' => 'EG',
+            '--name' => 'entry-file'
+        ]);
+
+        $entryPath = $dir->url() . '/.changelogs/entry-file.yml';
+
+        $this->assertStringEqualsFile($entryPath, "---
+title: 'My entry title'
+type: fix
+author: EG
+");
+    }
+    
     /**
      * @param  array              $structure
      * @return vfsStreamDirectory
