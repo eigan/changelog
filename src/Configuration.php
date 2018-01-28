@@ -47,7 +47,7 @@ class Configuration
     
     public function getChangelogFilePath(): string
     {
-        return $this->absolutePath($this->data['changelog'] ?? 'CHANGELOG') . '.md';
+        return $this->absolutePath($this->data['changelog'] ?? 'CHANGELOG.md');
     }
 
     /**
