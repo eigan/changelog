@@ -3,8 +3,8 @@
 namespace Logg;
 
 use Logg\Formatter\IFormatter;
-use Logg\Formatter\MarkdownFormatter;
 use Logg\Formatter\KeepAChangelogFormatter;
+use Logg\Formatter\PlainFormatter;
 
 class Configuration
 {
@@ -28,14 +28,14 @@ class Configuration
      */
     public function getConfiguredFormatter(): IFormatter
     {
-        $config = $this->data['formatter'] ?? 'markdown';
+        $config = $this->data['formatter'] ?? 'plain';
         
         switch ($config) {
             case 'keep-a-changelog':
                 return new KeepAChangelogFormatter();
                 
             default:
-                return new MarkdownFormatter();
+                return new PlainFormatter();
                 break;
         }
     }

@@ -4,7 +4,7 @@ namespace Logg\Formatter;
 
 use Logg\Entry\Entry;
 
-class MarkdownFormatter implements IFormatter
+class PlainFormatter implements IFormatter
 {
     /**
      * @inheritdoc
