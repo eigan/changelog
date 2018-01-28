@@ -32,6 +32,8 @@ class KeepAChangelogFormatter implements IFormatter
             foreach ($entryGroup['entries'] as $entry) {
                 $lines[] = '- ' . $entry->getTitle();
             }
+            
+            $lines[] = '';
         }
         
         return implode("\n", $lines);

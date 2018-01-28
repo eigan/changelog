@@ -48,16 +48,22 @@ class KeepAChangelogFormatterTest extends TestCase
         $lines[] = '## [1.0] - ' . date('Y-m-d');
         $lines[] = '### Added';
         $lines[] = '- Keep a changelog please';
+        $lines[] = '';
         $lines[] = '### Changed';
         $lines[] = '- Keep a changelog please';
+        $lines[] = '';
         $lines[] = '### Deprecated';
         $lines[] = '- Keep a changelog please';
+        $lines[] = '';
         $lines[] = '### Removed';
         $lines[] = '- Keep a changelog please';
+        $lines[] = '';
         $lines[] = '### Fixed';
         $lines[] = '- Keep a changelog please';
+        $lines[] = '';
         $lines[] = '### Security';
         $lines[] = '- Keep a changelog please';
+        $lines[] = '';
         
         $this->assertEquals(implode("\n", $lines), $result);
     }
