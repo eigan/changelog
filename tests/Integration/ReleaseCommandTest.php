@@ -62,7 +62,31 @@ class ReleaseCommandTest extends TestCase
 * [new] Abc (EG)
 ');
     }
+    
+    public function testInvalidYamlFile()
+    {
+        $structure = [
+            '.changelogs' => [
+                'my-entry.yml' => "invalid
+                foo\:bar pp
+    ",
+                ]
+            ];
 
+        $dir = vfsStream::setup('test', null, $structure);
+
+        $application = new Application($this->testRoot->url());
+        $command = $application->find('release');
+
+        $this->commandTester = new CommandTester($command);
+        
+        $output = $this->execute([
+            'headline' => '1.0'
+        ]);
+        
+        $this->assertEquals("No entries to append\n", $output);
+    }
+    
     /**
      * @param  array              $structure
      * @return vfsStreamDirectory

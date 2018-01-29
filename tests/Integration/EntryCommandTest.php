@@ -117,6 +117,18 @@ author: EG
 ");
     }
     
+    public function testEmptyEntryTitle()
+    {
+        $output = $this->execute([
+            'title' => '',
+            '--type' => '2',
+            '--author' => 'EG',
+            '--name' => 'entry-file'
+        ]);
+        
+        $this->assertEquals("Missing entry title\n", $output);
+    }
+    
     /**
      * @param  array              $structure
      * @return vfsStreamDirectory
@@ -140,8 +152,8 @@ author: EG
         $this->commandTester->setInputs($inputs);
 
         $this->commandTester->execute($arguments, $options + [
-                'interactive' => !empty($inputs)
-            ]);
+            'interactive' => !empty($inputs)
+        ]);
 
         return $this->commandTester->getDisplay();
     }

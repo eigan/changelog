@@ -22,7 +22,7 @@ class Entry
     {
         $this->name = $name;
 
-        if (isset($all['title']) === false) {
+        if (empty($all['title'])) {
             throw new \InvalidArgumentException('Missing title in entry body');
         }
 

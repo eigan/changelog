@@ -73,7 +73,7 @@ class ReleaseCommand extends Command
                 $output->writeln('No entries to append');
             }
             
-            exit(1);
+            return 1;
         }
 
         $content = $this->formatter->format($input->getArgument('headline'), $entries, [

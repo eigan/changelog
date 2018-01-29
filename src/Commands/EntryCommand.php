@@ -64,11 +64,17 @@ class EntryCommand extends Command
         
         $name = $this->askForName($input, $io);
         
-        $entry = new Entry($name, [
-            'title' => $title,
-            'type' => $type,
-            'author' => $author
-        ]);
+        try {
+            $entry = new Entry($name, [
+                'title' => $title,
+                'type' => $type,
+                'author' => $author
+            ]);
+        } catch (\InvalidArgumentException $e) {
+            $output->writeln('Missing entry title');
+            
+            return 1;
+        }
 
         $content = $this->handler->transform($entry);
 
