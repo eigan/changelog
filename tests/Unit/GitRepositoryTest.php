@@ -16,11 +16,6 @@ class GitRepositoryTest extends TestCase
     {
         $this->repository = new GitRepository(__DIR__ . '/../../');
     }
-    
-    public function testCurrentBranchName()
-    {
-        return $this->assertEquals('master', $this->repository->getCurrentBranchName());
-    }
 
     public function testGetLastCommitAuthor()
     {
