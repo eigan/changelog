@@ -4,6 +4,7 @@ namespace Logg\Commands;
 
 use Logg\Entry\Entry;
 use Logg\Filesystem;
+use Logg\Formatter\IFormatter;
 use Logg\GitRepository;
 use Logg\Handler\IEntryFileHandler;
 use Symfony\Component\Console\Command\Command;
@@ -30,16 +31,23 @@ class EntryCommand extends Command
      * @var null|GitRepository
      */
     private $repository;
+
+    /**
+     * @var IFormatter
+     */
+    private $formatter;
     
     public function __construct(
         IEntryFileHandler $handler,
         Filesystem $filesystem,
+        IFormatter $formatter,
         GitRepository $repository = null
     ) {
         parent::__construct();
 
         $this->handler = $handler;
         $this->filesystem = $filesystem;
+        $this->formatter = $formatter;
         $this->repository = $repository;
     }
 
@@ -106,15 +114,10 @@ class EntryCommand extends Command
         // TODO: Resolve from commit message
         $default = $input->getOption('type');
         
-        $types = [
-            '1' => 'new',
-            '2' => 'fix',
-            '3' => 'security',
-            '0' => 'none'
-        ];
+        $types = $this->getSuggestedTypes();
 
-        if (is_numeric($default) === false) {
-            $default = array_search($default, $types, true);
+        if ($default && is_numeric($default) === false) {
+            $default = $this->resolveDefaultTypeIndex($default);
         }
         
         $choice = new ChoiceQuestion(
@@ -133,8 +136,15 @@ class EntryCommand extends Command
             $type = '';
         }
         
-        if (is_numeric($type)) {
-            return $types[$type];
+        foreach ($this->formatter->getSuggestedTypes() as $index => $suggestedType) {
+            if (is_numeric($type) && $index + 1 === (int) $type) {
+                // We never start from index 0, so we add 1 to index here
+                return $suggestedType->key;
+            }
+            
+            if (strpos($type, $suggestedType->label) !== false) {
+                return $suggestedType->key;
+            }
         }
         
         return $type;
@@ -181,6 +191,42 @@ class EntryCommand extends Command
         }
         
         return $default;
+    }
+    
+    private function getSuggestedTypes()
+    {
+        $suggestions = $this->formatter->getSuggestedTypes();
+        $types = [];
+        
+        $i = 1;
+        foreach ($suggestions as $key => $suggestion) {
+            $description = $suggestion->description;
+            
+            if ($description) {
+                $description = ' <comment>('.$suggestion->description.')</>';
+            }
+            
+            $types[$i++] = '<options=bold>'.$suggestion->label.'</>' . $description;
+        }
+        
+        return $types;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return int
+     */
+    private function resolveDefaultTypeIndex(string $type): int
+    {
+        foreach ($this->formatter->getSuggestedTypes() as $index => $suggestedType) {
+            if ($type === $suggestedType->key) {
+                // We always present options from 1, so increment here
+                return $index + 1;
+            }
+        }
+        
+        return count($this->formatter->getSuggestedTypes());
     }
     
     private function uniqueNameSuggestion(string $nameSuggestion)

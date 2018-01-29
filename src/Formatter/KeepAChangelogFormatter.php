@@ -3,18 +3,25 @@
 namespace Logg\Formatter;
 
 use Logg\Entry\Entry;
+use Logg\Entry\EntryType;
 
 class KeepAChangelogFormatter implements IFormatter
 {
-    private const HEADERS = [
-        'new' => 'Added',
-        'changed' => 'Changed',
-        'deprecated' => 'Deprecated',
-        'removed' => 'Removed',
-        'fix' => 'Fixed',
-        'security' => 'Security',
-    ];
-    
+    /**
+     * @inheritdoc
+     */
+    public function getSuggestedTypes(): array
+    {
+        return [
+            new EntryType('added', 'Added', 'for new features'),
+            new EntryType('changed', 'Changed', 'for changes in existing functionality'),
+            new EntryType('deprecated', 'Deprecated', 'for soon-to-be removed features'),
+            new EntryType('removed', 'Removed', 'for now removed features'),
+            new EntryType('fixed', 'Fixed', 'for any bug fixes'),
+            new EntryType('security', 'Security', 'in case of vulnerabilities'),
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -57,8 +64,8 @@ class KeepAChangelogFormatter implements IFormatter
         }
         
         usort($groups, function ($firstGroup, $secondGroup) {
-            $firstIndex = array_search($firstGroup['header'], array_values(self::HEADERS), true);
-            $secondIndex = array_search($secondGroup['header'], array_values(self::HEADERS), true);
+            $firstIndex = $this->getGroupPosition($firstGroup);
+            $secondIndex = $this->getGroupPosition($secondGroup);
             
             return $firstIndex - $secondIndex;
         });
@@ -80,6 +87,27 @@ class KeepAChangelogFormatter implements IFormatter
     
     private function translateTypeToHeading(string $type): string
     {
-        return self::HEADERS[$type] ?? ucfirst($type);
+        foreach ($this->getSuggestedTypes() as $suggestedType) {
+            if ($type === $suggestedType->key) {
+                return $suggestedType->label;
+            }
+        }
+        
+        return ucfirst($type);
+    }
+    
+    private function getGroupPosition($group)
+    {
+        foreach ($this->getSuggestedTypes() as $index => $type) {
+            if ($type->label === $group['header']) {
+                return $index;
+            }
+
+            if ($type->key === $group['header']) {
+                return $index;
+            }
+        }
+        
+        return count($this->getSuggestedTypes());
     }
 }

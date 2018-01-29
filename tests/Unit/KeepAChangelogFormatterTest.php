@@ -15,12 +15,12 @@ class KeepAChangelogFormatterTest extends TestCase
         $result = $formatter->format('1.0', [
             new Entry('my-entry', [
                 'title' => 'Keep a changelog please',
-                'type' => 'fix'
+                'type' => 'fixed'
             ]),
             
             new Entry('my-entry2', [
                 'title' => 'Keep a changelog please',
-                'type' => 'new'
+                'type' => 'added'
             ]),
             
             new Entry('my-entry2', [

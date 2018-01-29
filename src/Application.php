@@ -63,7 +63,7 @@ class Application extends \Symfony\Component\Console\Application
 
         $own = [
             
-            new EntryCommand($this->handler, $this->filesystem, $this->repository),
+            new EntryCommand($this->handler, $this->filesystem, $this->getFormatter(), $this->repository),
             
             new ReleaseCommand(
                 $this->filesystem,

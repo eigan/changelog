@@ -67,6 +67,25 @@ type: fix
 author: EG
 ");
     }
+
+    public function testAskForEverything2()
+    {
+        $this->execute([], [], [
+            'My entry title',
+            'fix',
+            'EG',
+            'entry-file',
+            'Y'
+        ]);
+
+        $entryPath = $this->testRoot->url() . '/.changelogs/entry-file.yml';
+
+        $this->assertStringEqualsFile($entryPath, "---
+title: 'My entry title'
+type: fix
+author: EG
+");
+    }
     
     public function testNameCollision()
     {

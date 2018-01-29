@@ -3,9 +3,20 @@
 namespace Logg\Formatter;
 
 use Logg\Entry\Entry;
+use Logg\Entry\EntryType;
 
 class PlainFormatter implements IFormatter
 {
+    public function getSuggestedTypes(): array
+    {
+        return [
+            new EntryType('new', 'New', 'for new features'),
+            new EntryType('fix', 'Bugfix', 'for bugfixes'),
+            new EntryType('security', 'Security', 'for security issues'),
+            new EntryType('none', 'None'),
+        ];
+    }
+
     /**
      * @inheritdoc
      */
