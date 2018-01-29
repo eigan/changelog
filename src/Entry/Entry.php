@@ -50,20 +50,10 @@ class Entry
     {
         return $this->all['title'];
     }
-    
-    public function setTitle(string $title)
-    {
-        $this->all['title'] = $title;
-    }
 
     public function getType(): ?string
     {
         return $this->all['type'] ?? null;
-    }
-    
-    public function setType(string $type): void
-    {
-        $this->all['type'] = $type;
     }
 
     public function getAuthor(): ?string

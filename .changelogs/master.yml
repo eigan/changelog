@@ -1,0 +1,3 @@
+---
+title: 'Removed Entry::setTitle and Entry::setType'
+type: removed
