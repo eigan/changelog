@@ -37,7 +37,13 @@ class KeepAChangelogFormatter implements IFormatter
             $lines[] = '### ' . $entryGroup['header'];
             
             foreach ($entryGroup['entries'] as $entry) {
-                $lines[] = '- ' . $entry->getTitle();
+                $line = '- ' . $entry->getTitle();
+        
+                if (strlen($entry->getAuthor()) > 0) {
+                    $line .= ' (' . $entry->getAuthor() . ')';
+                }
+                
+                $lines[] = $line;
             }
             
             $lines[] = '';
