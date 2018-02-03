@@ -1,3 +1,13 @@
+## [0.15] - 2018-02-03
+### Added
+- Let the formatters suggest entry types
+
+### Removed
+- Removed Entry::setTitle and Entry::setType
+
+### Fixed
+- Add author to KeepAChangelogFormatter (Edvin Hultberg)
+
 ## [0.14] - 2018-01-28
 ### Added
 - Added Keep A Changelog formatter
