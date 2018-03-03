@@ -1,3 +1,7 @@
+## [0.16] - 2018-03-03
+### Changed
+- Dont ask if it is ok to write, just write.
+
 ## [0.15] - 2018-02-03
 ### Added
 - Let the formatters suggest entry types

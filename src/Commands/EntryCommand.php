@@ -88,14 +88,13 @@ class EntryCommand extends Command
 
         $io->writeln('');
         
-        $io->note('Write: ' . $entry->getName(). '.' . $this->handler->getExtension());
+        $io->note('Wrote to: ' . $entry->getName(). '.' . $this->handler->getExtension());
 
         $io->write($content);
 
         $io->writeln('');
-        if ($io->confirm('Is this ok?')) {
-            $this->filesystem->writeEntry($entry);
-        }
+        
+        $this->filesystem->writeEntry($entry);
     }
     
     private function askForTitle(InputInterface $input, SymfonyStyle $output)
