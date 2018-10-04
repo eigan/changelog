@@ -1,3 +1,7 @@
+## [0.18] - 2018-10-04
+### Added
+- Able to use outside project root (composer global or /usr/local/bin) (EG)
+
 ## [0.17] - 2018-10-04
 ### Added
 - Preview release with `--preview-json` and get JSON output of entries (EG)
