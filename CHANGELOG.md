@@ -1,3 +1,7 @@
+## [0.17] - 2018-10-04
+### Added
+- Preview release with `--preview-json` and get JSON output of entries (EG)
+
 ## [0.16] - 2018-03-03
 ### Changed
 - Dont ask if it is ok to write, just write.
