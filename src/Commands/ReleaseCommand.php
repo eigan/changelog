@@ -2,6 +2,8 @@
 
 namespace Logg\Commands;
 
+use function json_encode;
+use Logg\Entry\Entry;
 use Logg\Entry\EntryCollector;
 use Logg\Filesystem;
 use Logg\Formatter\IFormatter;
@@ -58,12 +60,14 @@ class ReleaseCommand extends Command
         $this->addArgument('headline', InputArgument::REQUIRED, 'The changelog headline');
         $this->addOption('minor', '', InputOption::VALUE_NONE, 'Set as minor release');
         $this->addOption('preview', '', InputOption::VALUE_NONE, 'Preview and exit');
+        $this->addOption('preview-json', '', InputOption::VALUE_NONE, 'Preview with json and exit');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $isPreview = $input->getOption('preview');
-        
+        $isJsonPreview = $input->getOption('preview-json');
+        $isPreview = $input->getOption('preview') || $isJsonPreview;
+
         $io = new SymfonyStyle($input, $output);
 
         $entries = $this->collector->collect();
@@ -84,6 +88,11 @@ class ReleaseCommand extends Command
             $io->note('Append to: ' . $this->filesystem->getChangelogPath());
         }
 
+        if($isJsonPreview) {
+            $this->writeJsonContent($output, $input->getArgument('headline'), $entries);
+            return;
+        }
+        
         $output->write($content);
         if ($isPreview === false) {
             $output->writeln('');
@@ -102,5 +111,20 @@ class ReleaseCommand extends Command
         $this->merger->append($content);
 
         $this->filesystem->cleanup();
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param Entry[] $entries
+     */
+    private function writeJsonContent(OutputInterface $output, string $headline, array $entries)
+    {
+        $data = [];
+        
+        foreach($entries as $entry) {
+            $data[] = $entry->toArray();
+        }
+        
+        $output->write(json_encode(['headline' => $headline, 'entries' => $data]));
     }
 }

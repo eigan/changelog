@@ -62,6 +62,16 @@ class ReleaseCommandTest extends TestCase
 * [new] Abc (EG)
 ');
     }
+
+    public function testJsonPreview()
+    {
+        $output = $this->execute([
+            'headline' => '1.0',
+            '--preview-json' => true
+        ]);
+
+        $this->assertEquals($output, '{"headline":"1.0","entries":[{"title":"Foo bar","type":"fix","author":"EG"},{"title":"Foobar!","type":"fix","author":"EG"},{"title":"My entry title","type":"fix","author":"EG"},{"title":"Abc","type":"new","author":"EG"}]}');
+    }
     
     public function testInvalidYamlFile()
     {
