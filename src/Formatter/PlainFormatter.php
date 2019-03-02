@@ -47,7 +47,9 @@ class PlainFormatter implements IFormatter
 
         $line .= $entry->getTitle();
         
-        if (strlen($entry->getAuthor()) > 0) {
+        $author = $entry->getAuthor();
+        
+        if ($author && strlen($author) > 0) {
             $line .= ' (' . $entry->getAuthor() . ')';
         }
 

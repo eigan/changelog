@@ -2,12 +2,15 @@
 
 namespace Logg\Commands;
 
+use InvalidArgumentException;
 use function json_encode;
+use function json_last_error_msg;
 use Logg\Entry\Entry;
 use Logg\Entry\EntryCollector;
 use Logg\Filesystem;
 use Logg\Formatter\IFormatter;
 use Logg\LogMerger;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -80,7 +83,13 @@ class ReleaseCommand extends Command
             return 1;
         }
 
-        $content = $this->formatter->format($input->getArgument('headline'), $entries, [
+        $headline = $input->getArgument('headline');
+
+        if (is_string($headline) === false) {
+            throw new InvalidArgumentException('Invalid value for argument headline. Should be string.');
+        }
+        
+        $content = $this->formatter->format($headline, $entries, [
             'minor' => $input->getOption('minor')
         ]);
         
@@ -89,8 +98,8 @@ class ReleaseCommand extends Command
         }
 
         if($isJsonPreview) {
-            $this->writeJsonContent($output, $input->getArgument('headline'), $entries);
-            return;
+            $this->writeJsonContent($output, $headline, $entries);
+            return 0;
         }
         
         $output->write($content);
@@ -125,6 +134,12 @@ class ReleaseCommand extends Command
             $data[] = $entry->toArray();
         }
         
-        $output->write(json_encode(['headline' => $headline, 'entries' => $data]));
+        $jsonFormatted = json_encode(['headline' => $headline, 'entries' => $data]);
+        
+        if($jsonFormatted === false) {
+            throw new RuntimeException('Failed to create JSON string. Got error: ' . json_last_error_msg());
+        }
+        
+        $output->write($jsonFormatted);
     }
 }

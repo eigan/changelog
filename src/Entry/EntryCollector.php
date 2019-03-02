@@ -2,6 +2,7 @@
 
 namespace Logg\Entry;
 
+use function is_array;
 use Logg\Filesystem;
 use Logg\Handler\IEntryFileHandler;
 
@@ -53,6 +54,14 @@ class EntryCollector
             $firstIndex = $firstIndex === false ? 10 : $firstIndex;
             $secondIndex = array_search($secondEntry->getType(), Entry::TYPES, true);
             $secondIndex = $secondIndex === false ? 10 : $secondIndex;
+            
+            if(is_array($firstIndex)) {
+                $firstIndex = 10;
+            }
+            
+            if(is_array($secondIndex)) {
+                $secondIndex = 10;
+            }
             
             $typeCompare = $firstIndex - $secondIndex;
             

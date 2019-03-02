@@ -32,7 +32,7 @@ class Application extends \Symfony\Component\Console\Application
     private $config;
 
     /**
-     * @var IFormatter
+     * @var null|IFormatter
      */
     private $formatter;
     

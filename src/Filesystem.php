@@ -59,7 +59,7 @@ class Filesystem
     }
 
     /**
-     * @return string[] entries with plain content
+     * @return array[] entries with plain content
      */
     public function getEntryContents(): array
     {

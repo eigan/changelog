@@ -2,6 +2,8 @@
 
 namespace Logg\Commands;
 
+use InvalidArgumentException;
+use function is_array;
 use Logg\Entry\Entry;
 use Logg\Filesystem;
 use Logg\Formatter\IFormatter;
@@ -102,6 +104,10 @@ class EntryCommand extends Command
     {
         $title = $input->getArgument('title');
         
+        if (is_array($title)) {
+            throw new InvalidArgumentException('Only one title is allowed');
+        }
+        
         if (empty($title) && $this->repository) {
             $title = $this->repository->getLastCommitMessage();
         }
@@ -113,6 +119,10 @@ class EntryCommand extends Command
     {
         // TODO: Resolve from commit message
         $default = $input->getOption('type');
+        
+        if (is_string($default) === false) {
+            throw new InvalidArgumentException('Invalid value for argument type. Should be string.');
+        }
         
         $types = $this->getSuggestedTypes();
 
@@ -153,6 +163,10 @@ class EntryCommand extends Command
     private function askForAuthor(InputInterface $input, SymfonyStyle $output)
     {
         $default = $input->getOption('author');
+
+        if (is_string($default) === false) {
+            throw new InvalidArgumentException('Invalid value for argument author. Should be string.');
+        }
         
         if (empty($default) && $this->repository) {
             $default = $this->repository->getLastCommitAuthor();
