@@ -7,6 +7,7 @@ use Logg\Filesystem;
 use Logg\Formatter\IFormatter;
 use Logg\GitRepository;
 use Logg\Handler\IEntryFileHandler;
+use function substr;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -70,7 +71,7 @@ class EntryCommand extends Command
         $type = $this->askForType($input, $io);
         $author = $this->askForAuthor($input, $io);
         
-        $name = $this->askForName($input, $io);
+        $name = $this->askForName($input, $title, $io);
         
         try {
             $entry = new Entry($name, [
@@ -160,9 +161,17 @@ class EntryCommand extends Command
         return $output->ask('Author', $default);
     }
 
-    private function askForName(InputInterface $input, SymfonyStyle $output)
+    private function askForName(InputInterface $input, string $title, SymfonyStyle $output)
     {
         $default = $input->getOption('name') ?? '';
+        
+        if (is_array($default)) {
+            throw new InvalidArgumentException('Only one name is allowed');
+        }
+        
+        if(empty($default) && $title) {
+            $default = $this->fileNameFromTitle($title);
+        }
         
         if (empty($default) && $this->repository) {
             $default = $this->repository->getCurrentBranchName();
@@ -241,5 +250,36 @@ class EntryCommand extends Command
         }
         
         return $nameSuggestion;
+    }
+    
+    private function fileNameFromTitle($title, $separator = '-'): ?string
+    {
+        // Convert all dashes/underscores into separator
+        $flip = $separator === '-' ? '_' : '-';
+
+        $title = preg_replace('!['.preg_quote($flip).']+!u', $separator, $title);
+
+        if (is_string($title) === false) {
+            return null;
+        }
+        
+        // Replace @ with the word 'at'
+        $title = str_replace('@', $separator.'at'.$separator, $title);
+
+        // Remove all characters that are not the separator, letters, numbers, or whitespace.
+        $title = preg_replace('![^'.preg_quote($separator).'\pL\pN\s]+!u', '', mb_strtolower($title));
+
+        if (is_string($title) === false) {
+            return null;
+        }
+        
+        // Replace all separator characters and whitespace by a single separator
+        $title = preg_replace('!['.preg_quote($separator).'\s]+!u', $separator, $title);
+
+        if (is_string($title) === false) {
+            return null;
+        }
+        
+        return substr(trim($title, $separator), 0, 90);
     }
 }

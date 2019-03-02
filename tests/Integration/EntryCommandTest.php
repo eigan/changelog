@@ -55,11 +55,10 @@ author: EG
             'My entry title',
             '2',
             'EG',
-            'entry-file',
             'Y'
         ]);
 
-        $entryPath = $this->testRoot->url() . '/.changelogs/entry-file.yml';
+        $entryPath = $this->testRoot->url() . '/.changelogs/my-entry-title.yml';
 
         $this->assertStringEqualsFile($entryPath, "---
 title: 'My entry title'
@@ -74,11 +73,10 @@ author: EG
             'My entry title',
             'fix',
             'EG',
-            'entry-file',
             'Y'
         ]);
 
-        $entryPath = $this->testRoot->url() . '/.changelogs/entry-file.yml';
+        $entryPath = $this->testRoot->url() . '/.changelogs/my-entry-title.yml';
 
         $this->assertStringEqualsFile($entryPath, "---
 title: 'My entry title'
