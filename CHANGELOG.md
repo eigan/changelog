@@ -1,3 +1,7 @@
+## [0.20] - 2019-03-22
+### Changed
+- Default filename is now retrieved from changelog title (EG)
+
 ## [0.18] - 2018-10-04
 ### Added
 - Able to use outside project root (composer global or /usr/local/bin) (EG)
