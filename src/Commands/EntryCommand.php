@@ -120,7 +120,7 @@ class EntryCommand extends Command
         // TODO: Resolve from commit message
         $default = $input->getOption('type');
         
-        if (is_string($default) === false) {
+        if ($default !== null && is_string($default) === false) {
             throw new InvalidArgumentException('Invalid value for argument type. Should be string.');
         }
         
@@ -164,7 +164,7 @@ class EntryCommand extends Command
     {
         $default = $input->getOption('author');
 
-        if (is_string($default) === false) {
+        if ($default !== null && is_string($default) === false) {
             throw new InvalidArgumentException('Invalid value for argument author. Should be string.');
         }
         
