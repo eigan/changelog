@@ -20,9 +20,24 @@ cache:
   - vendor/
 
 # 
-php:7.1:
-  image: php:7.1
+php:7.2:
+  image: php:7.2
   script:
-    - php vendor/bin/phpstan analyse --no-progress -l 7 src
+    - php vendor/bin/phpstan analyse --no-progress -l 8 src
+    - echo "Running PHPUnit Tests"
+    - php vendor/bin/phpunit --colors="never" --coverage-text
+
+php:7.3:
+  image: php:7.3
+  script:
+    - php vendor/bin/phpstan analyse --no-progress -l 8 src
+    - echo "Running PHPUnit Tests"
+    - php vendor/bin/phpunit --colors="never" --coverage-text
+
+
+php:7.4:
+  image: php:7.4
+  script:
+    - php vendor/bin/phpstan analyse --no-progress -l 8 src
     - echo "Running PHPUnit Tests"
     - php vendor/bin/phpunit --colors="never" --coverage-text
