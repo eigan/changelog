@@ -1,6 +1,5 @@
-[![pipeline status](https://gitlab.com/eigan/changelog/badges/master/pipeline.svg)](https://gitlab.com/eigan/changelog/commits/master)
-[![coverage report](https://gitlab.com/eigan/changelog/badges/master/coverage.svg)](https://gitlab.com/eigan/changelog/commits/master)
-
+![Tests](https://github.com/eigan/changelog/workflows/CI/badge.svg)
+[![Coverage](https://codecov.io/gh/eigan/changelog/branch/master/graph/badge.svg)](https://codecov.io/gh/eigan/changelog)
 
 # Changelog
 Helps you write changelog

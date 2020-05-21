@@ -100,7 +100,7 @@ class Filesystem
         
         $path = $this->entriesPath .'/'. $entry->getName() . '.' . $this->handler->getExtension();
         $content = $this->handler->transform($entry);
-
+        
         if (file_exists($path)) {
             throw new \RuntimeException('Entry with same name exists. Please specify other name with \'-f\' option');
         }
