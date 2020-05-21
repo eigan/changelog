@@ -7,6 +7,7 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use function str_replace;
 
 class EntryCommandTest extends TestCase
 {
@@ -42,7 +43,7 @@ class EntryCommandTest extends TestCase
         
         $entryPath = $this->testRoot->url() . '/.changelogs/entry-file.yml';
         
-        $this->assertStringEqualsFile($entryPath, "---
+        self::assertStringContentsEqualsFileContent($entryPath, "---
 title: 'My entry title'
 type: fix
 author: EG
@@ -60,7 +61,7 @@ author: EG
 
         $entryPath = $this->testRoot->url() . '/.changelogs/my-entry-title.yml';
 
-        $this->assertStringEqualsFile($entryPath, "---
+        self::assertStringContentsEqualsFileContent($entryPath, "---
 title: 'My entry title'
 type: fix
 author: EG
@@ -78,7 +79,7 @@ author: EG
 
         $entryPath = $this->testRoot->url() . '/.changelogs/my-entry-title.yml';
 
-        $this->assertStringEqualsFile($entryPath, "---
+        self::assertStringContentsEqualsFileContent($entryPath, "---
 title: 'My entry title'
 type: fix
 author: EG
@@ -127,7 +128,7 @@ author: EG
 
         $entryPath = $dir->url() . '/.changelogs/entry-file.yml';
 
-        $this->assertStringEqualsFile($entryPath, "---
+        self::assertStringContentsEqualsFileContent($entryPath, "---
 title: 'My entry title'
 type: fix
 author: EG
@@ -163,7 +164,7 @@ author: EG
         
         return vfsStream::setup('test', null, $structure);
     }
-
+    
     private function execute($arguments, $options = [], $inputs = [])
     {
         $this->commandTester->setInputs($inputs);
@@ -172,6 +173,16 @@ author: EG
             'interactive' => !empty($inputs)
         ]);
 
-        return $this->commandTester->getDisplay();
+        return str_replace("\r\n", "\n", $this->commandTester->getDisplay());
+    }
+
+    public static function assertStringContentsEqualsFileContent(
+        string $expectedFile,
+        string $expected
+    ): void {
+        $actual = file_get_contents($expectedFile);
+        $expected = str_replace("\r\n", "\n", $expected);
+        
+        self::assertEquals($expected, $actual);
     }
 }

@@ -7,6 +7,8 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
+use function file_get_contents;
+use function str_replace;
 
 class ReleaseCommandTest extends TestCase
 {
@@ -39,7 +41,7 @@ class ReleaseCommandTest extends TestCase
         
         $changelogPath = $this->testRoot->url() . '/CHANGELOG.md';
         
-        $this->assertStringEqualsFile($changelogPath, '#### 1.0
+        $this->assertStringContentsEqualsFileContent($changelogPath, '#### 1.0
 * [fix] Foo bar (EG)
 * [fix] Foobar! (EG)
 * [fix] My entry title (EG)
@@ -55,12 +57,12 @@ class ReleaseCommandTest extends TestCase
             '--preview' => true
         ]);
         
-        $this->assertEquals($output, '#### 1.0
+        $this->assertEquals(str_replace("\r\n", "\n", '#### 1.0
 * [fix] Foo bar (EG)
 * [fix] Foobar! (EG)
 * [fix] My entry title (EG)
 * [new] Abc (EG)
-');
+'), $output);
     }
 
     public function testJsonPreview()
@@ -142,8 +144,18 @@ author: EG
 
         $this->commandTester->execute($arguments, $options + [
                 'interactive' => !empty($inputs)
-            ]);
+        ]);
 
-        return $this->commandTester->getDisplay();
+        return str_replace("\r\n", "\n", $this->commandTester->getDisplay());
+    }
+
+    public static function assertStringContentsEqualsFileContent(
+        string $expectedFile,
+        string $expected
+    ): void {
+        $actual = file_get_contents($expectedFile);
+        $expected = str_replace("\r\n", "\n", $expected);
+
+        self::assertEquals($expected, $actual);
     }
 }
