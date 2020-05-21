@@ -1,3 +1,7 @@
+## [0.21] - 2020-05-21
+### Changed
+- Cleanup code with phpstan and make sure composer.json is validated (EG)
+
 ## [0.20] - 2019-03-22
 ### Changed
 - Default filename is now retrieved from changelog title (EG)
