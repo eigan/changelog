@@ -55,14 +55,6 @@ class EntryCollector
             $secondIndex = array_search($secondEntry->getType(), Entry::TYPES, true);
             $secondIndex = $secondIndex === false ? 10 : $secondIndex;
             
-            if(is_array($firstIndex)) {
-                $firstIndex = 10;
-            }
-            
-            if(is_array($secondIndex)) {
-                $secondIndex = 10;
-            }
-            
             $typeCompare = $firstIndex - $secondIndex;
             
             if ($typeCompare === 0) {

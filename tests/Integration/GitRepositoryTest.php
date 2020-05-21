@@ -12,7 +12,7 @@ class GitRepositoryTest extends TestCase
      */
     private $repository;
     
-    public function setUp()
+    public function setUp(): void
     {
         $this->repository = new GitRepository(__DIR__ . '/../../');
     }

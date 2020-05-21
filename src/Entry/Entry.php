@@ -14,10 +14,15 @@ class Entry
     /**
      * All properties from file
      *
-     * @var array
+     * @var array{title: string, type: string, author: string}
      */
     protected $all;
 
+    /**
+     * Entry constructor.
+     * @param string $name
+     * @param array{title?: string, type?: string, author?: string} $all
+     */
     public function __construct(string $name, array $all)
     {
         $this->name = $name;
@@ -26,14 +31,9 @@ class Entry
             throw new \InvalidArgumentException('Missing title in entry body');
         }
 
-        $this->all = array_merge(
-            [
-                'title' => '',
-                'type' => '',
-                'author' => ''
-            ],
-            $all
-        );
+        $this->all['title'] = $all['title'] ?? '';
+        $this->all['type'] = $all['type'] ?? '';
+        $this->all['author'] = $all['author'] ?? '';
     }
 
     /**
@@ -61,6 +61,9 @@ class Entry
         return $this->all['author'] ?? null;
     }
 
+    /**
+     * @return array{title: string, type: string, author: string}
+     */
     public function toArray(): array
     {
         return $this->all;

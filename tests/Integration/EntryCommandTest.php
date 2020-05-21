@@ -21,7 +21,7 @@ class EntryCommandTest extends TestCase
      */
     private $testRoot;
     
-    public function setUp()
+    public function setUp(): void
     {
         $this->testRoot = $this->createDirectory();
 

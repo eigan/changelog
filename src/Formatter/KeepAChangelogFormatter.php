@@ -39,7 +39,9 @@ class KeepAChangelogFormatter implements IFormatter
             foreach ($entryGroup['entries'] as $entry) {
                 $line = '- ' . $entry->getTitle();
         
-                if (strlen($entry->getAuthor()) > 0) {
+                $author = $entry->getAuthor();
+                
+                if ($author && strlen($author) > 0) {
                     $line .= ' (' . $entry->getAuthor() . ')';
                 }
                 
@@ -55,14 +57,14 @@ class KeepAChangelogFormatter implements IFormatter
     /**
      * @param Entry[] $entries
      *
-     * @return array
+     * @return array<string, array{entries: Entry[], header:string}>
      */
     private function groupEntries(array $entries): array
     {
         $groups = [];
         
         foreach ($entries as $entry) {
-            if (isset($groups[$entry->getType()]['entries']) === false) {
+            if (isset($groups[$entry->getType()]) === false) {
                 $groups[$entry->getType()] = $this->setupGroup($entry->getType());
             }
             
@@ -78,7 +80,11 @@ class KeepAChangelogFormatter implements IFormatter
         
         return $groups;
     }
-    
+
+    /**
+     * @param string|null $type
+     * @return array{header: string, entries: Entry[]}
+     */
     private function setupGroup(string $type = null)
     {
         if ($type === null) {
@@ -101,8 +107,12 @@ class KeepAChangelogFormatter implements IFormatter
         
         return ucfirst($type);
     }
-    
-    private function getGroupPosition($group)
+
+    /**
+     * @param array{header: string, entries: Entry[]} $group
+     * @return int
+     */
+    private function getGroupPosition($group): int
     {
         foreach ($this->getSuggestedTypes() as $index => $type) {
             if ($type->label === $group['header']) {

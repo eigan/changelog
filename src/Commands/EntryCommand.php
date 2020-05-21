@@ -54,7 +54,7 @@ class EntryCommand extends Command
         $this->repository = $repository;
     }
 
-    public function configure()
+    public function configure(): void
     {
         $this->setName('entry');
         $this->setDescription('Create log entry');
@@ -65,7 +65,7 @@ class EntryCommand extends Command
         $this->addOption('name', 'f', InputOption::VALUE_OPTIONAL);
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -98,9 +98,11 @@ class EntryCommand extends Command
         $io->writeln('');
         
         $this->filesystem->writeEntry($entry);
+        
+        return 0;
     }
     
-    private function askForTitle(InputInterface $input, SymfonyStyle $output)
+    private function askForTitle(InputInterface $input, SymfonyStyle $output): string
     {
         $title = $input->getArgument('title');
         
@@ -115,7 +117,7 @@ class EntryCommand extends Command
         return $output->ask('Title', $title);
     }
     
-    private function askForType(InputInterface $input, SymfonyStyle $output)
+    private function askForType(InputInterface $input, SymfonyStyle $output): string
     {
         // TODO: Resolve from commit message
         $default = $input->getOption('type');
@@ -160,7 +162,7 @@ class EntryCommand extends Command
         return $type;
     }
 
-    private function askForAuthor(InputInterface $input, SymfonyStyle $output)
+    private function askForAuthor(InputInterface $input, SymfonyStyle $output): string
     {
         $default = $input->getOption('author');
 
@@ -175,11 +177,11 @@ class EntryCommand extends Command
         return $output->ask('Author', $default);
     }
 
-    private function askForName(InputInterface $input, string $title, SymfonyStyle $output)
+    private function askForName(InputInterface $input, string $title, SymfonyStyle $output): string
     {
         $default = $input->getOption('name') ?? '';
         
-        if (is_array($default)) {
+        if (!is_string($default)) {
             throw new InvalidArgumentException('Only one name is allowed');
         }
         
@@ -191,8 +193,8 @@ class EntryCommand extends Command
             $default = $this->repository->getCurrentBranchName();
         }
         
-        $ask = function (string $default) use ($output) {
-            return $output->ask('Save entry as:', $default, function ($typed) {
+        $ask = function (string $default) use ($output): string {
+            return $output->ask('Save entry as:', $default, function (string $typed) {
                 if (strpos($typed, ' ') !== false) {
                     throw new \InvalidArgumentException('No spaces allowed');
                 }
@@ -202,7 +204,7 @@ class EntryCommand extends Command
         };
         
         if (empty($default)) {
-            $default = $ask($default);
+            $default = $ask('');
         }
         
         while (file_exists($this->filesystem->getEntriesPath() . '/' . $default . '.' . $this->handler->getExtension())) {
@@ -214,8 +216,11 @@ class EntryCommand extends Command
         
         return $default;
     }
-    
-    private function getSuggestedTypes()
+
+    /**
+     * @return array<int, string>
+     */
+    private function getSuggestedTypes(): array
     {
         $suggestions = $this->formatter->getSuggestedTypes();
         $types = [];
@@ -251,7 +256,7 @@ class EntryCommand extends Command
         return count($this->formatter->getSuggestedTypes());
     }
     
-    private function uniqueNameSuggestion(string $nameSuggestion)
+    private function uniqueNameSuggestion(string $nameSuggestion): string
     {
         $originalNameSuggestion = $nameSuggestion;
         $entriesPath = $this->filesystem->getEntriesPath();
@@ -266,7 +271,7 @@ class EntryCommand extends Command
         return $nameSuggestion;
     }
     
-    private function fileNameFromTitle($title, $separator = '-'): ?string
+    private function fileNameFromTitle(string $title, string $separator = '-'): ?string
     {
         // Convert all dashes/underscores into separator
         $flip = $separator === '-' ? '_' : '-';

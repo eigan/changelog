@@ -14,7 +14,7 @@ class GitRepository
         $this->rootPath = $rootPath;
     }
 
-    public function getCurrentBranchName()
+    public function getCurrentBranchName(): string
     {
         return exec('cd '.$this->rootPath.' && git rev-parse --abbrev-ref HEAD');
     }

@@ -42,7 +42,7 @@ class YamlHandler implements IEntryFileHandler
         if (is_array($properties) === false) {
             throw new \RuntimeException('Invalid entry data. Got: ' . $content);
         }
-
+        
         return new Entry($name, $properties);
     }
 }

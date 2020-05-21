@@ -48,7 +48,7 @@ class Application extends \Symfony\Component\Console\Application
         parent::__construct('Log generator', 'dev');
     }
     
-    public function getFormatter()
+    public function getFormatter(): Formatter\IFormatter
     {
         if (!$this->formatter) {
             return $this->formatter = $this->config->getConfiguredFormatter();
@@ -76,7 +76,7 @@ class Application extends \Symfony\Component\Console\Application
         return array_merge($parent, $own);
     }
     
-    private function setupRepository($rootPath)
+    private function setupRepository(string $rootPath): void
     {
         if (file_exists($rootPath . '/.git')) {
             $this->repository = new GitRepository($rootPath);

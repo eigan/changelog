@@ -18,7 +18,7 @@ class Configuration
      */
     private $data;
     
-    public function __construct($rootPath)
+    public function __construct(string $rootPath)
     {
         $this->data = [];
         $this->rootPath = $rootPath;
@@ -39,7 +39,6 @@ class Configuration
                 
             default:
                 return new PlainFormatter();
-                break;
         }
     }
     
@@ -70,10 +69,6 @@ class Configuration
             $handle = fopen($changelogPath, 'r');
             if ($handle) {
                 while (($line = fgets($handle)) !== false) {
-                    if($line === false) {
-                        break;
-                    }
-                    
                     if (strpos($line, 'formatter:') === 0) {
                         $formatter = trim(substr($line, strlen('formatter:')));
                     }

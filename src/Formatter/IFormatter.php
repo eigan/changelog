@@ -14,7 +14,7 @@ interface IFormatter
     /**
      * @param string              $headline
      * @param \Logg\Entry\Entry[] $entries
-     * @param array               $options
+     * @param array{minor: bool|null}               $options
      *
      * @return mixed
      */
