@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Logg;
 
 use Logg\Formatter\IFormatter;
@@ -28,13 +30,12 @@ class LogMerger
     }
 
     /**
-     * Formats the entries and append it to the changelog
-     * @param string $content
+     * Formats the entries and append it to the changelog.
      */
     public function append(string $content): void
     {
         // The formatter should append content
-        $entireContent = $content . "\n";
+        $entireContent = $content."\n";
 
         $this->filesystem->appendChangelog($entireContent);
     }

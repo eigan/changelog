@@ -1,40 +1,42 @@
 <?php
 
-$finder = PhpCsFixer\Finder::create()
-    ->in([__DIR__ . '/src', __DIR__ . '/bin', __DIR__ . '/tests']);
-
-return PhpCsFixer\Config::create()->setRules([
-    '@PSR2' => true,
-    'no_whitespace_before_comma_in_array' => true,
-    'whitespace_after_comma_in_array' => true,
-    'blank_line_after_opening_tag' => true,
-    'no_empty_statement' => true,
-    'simplified_null_return' => false,
-    'no_extra_consecutive_blank_lines' => true,
-    'function_typehint_space' => true,
-    'new_with_braces' => true,
-    'no_blank_lines_after_phpdoc' => true,
-    'phpdoc_indent' => true,
-    'phpdoc_align' => true,
-    'no_mixed_echo_print' => true,
-    'self_accessor' => true,
-    'no_trailing_comma_in_singleline_array' => true,
-    'single_quote' => true,
-    'single_blank_line_before_namespace' => true,
-    'cast_spaces' => true,
-    'no_unused_imports' => true,
-    'no_unneeded_control_parentheses' => true,
-    'ordered_imports' => true,
-    'no_short_echo_tag' => true,
-    'return_type_declaration' => true,
-    'array_syntax' => ['syntax' => 'short'],
-    'header_comment' => ['header' => '', 'location' => 'after_open'],
-    'dir_constant' => true,
-    'hash_to_slash_comment' => true,
-    'no_useless_else' => true,
-    'short_scalar_cast' => true,
-    'method_separation' => true,
-    'phpdoc_scalar' => true,
-    'ternary_to_null_coalescing' => true
-//    'protected_to_private' => true,
-])->setFinder($finder)->setRiskyAllowed(true);
+/*
+ * This document has been generated with
+ * https://mlocati.github.io/php-cs-fixer-configurator/#version:2.16.3|configurator
+ * you can change this configuration by importing this file.
+ */
+return PhpCsFixer\Config::create()
+    ->setRiskyAllowed(true)
+    ->setRules([
+        '@Symfony:risky' => true,
+        '@Symfony' => true,
+        '@PSR2' => true,
+        '@PSR1' => true,
+        '@PHP73Migration' => true,
+        '@PHP71Migration:risky' => true,
+        '@PHP71Migration' => true,
+        '@PHP70Migration:risky' => true,
+        '@PHP70Migration' => true,
+        'php_unit_dedicate_assert' => true,
+        'php_unit_dedicate_assert_internal_type' => true,
+        'array_indentation' => true,
+        'fully_qualified_strict_types' => true,
+        'final_internal_class' => true,
+        'explicit_string_variable' => true,
+        'method_chaining_indentation' => true,
+        'no_unset_on_property' => true,
+        'php_unit_method_casing' => true,
+        'php_unit_no_expectation_annotation' => true,
+        'php_unit_set_up_tear_down_visibility' => true,
+        'php_unit_test_case_static_method_calls' => true,
+        'phpdoc_order' => true,
+        'phpdoc_var_annotation_correct_order' => true,
+        'protected_to_private' => true,
+        'simple_to_complex_string_variable' => true,
+        'strict_param' => true,
+    ])
+    ->setFinder(PhpCsFixer\Finder::create()
+        ->exclude('vendor')
+        ->in([__DIR__ . '/src', __DIR__ . '/bin', __DIR__ . '/tests'])
+    )
+;

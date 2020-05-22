@@ -1,1 +1,4 @@
 /vendor/
+.php_cs.*
+.phpunit.*cache
+composer.lock

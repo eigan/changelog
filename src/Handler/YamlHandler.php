@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Logg\Handler;
 
 use Logg\Entry\Entry;
+use RuntimeException;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlHandler implements IEntryFileHandler
@@ -13,36 +16,28 @@ class YamlHandler implements IEntryFileHandler
     }
 
     /**
-     * Transform one entry into the contents of the file
-     *
-     * @param  Entry  $entry
-     * @return string
+     * Transform one entry into the contents of the file.
      */
     public function transform(Entry $entry): string
     {
         $properties = $entry->toArray();
 
-        return "---\n" . Yaml::dump($properties);
+        return "---\n".Yaml::dump($properties);
     }
 
     /**
-     * Creates an Entry by the content of an entry file
+     * Creates an Entry by the content of an entry file.
      *
-     * @param string $name
-     * @param string $content
-     *
-     * @throws \RuntimeException
-     *
-     * @return Entry
+     * @throws RuntimeException
      */
     public function parse(string $name, string $content): Entry
     {
         $properties = Yaml::parse($content);
 
-        if (is_array($properties) === false) {
-            throw new \RuntimeException('Invalid entry data. Got: ' . $content);
+        if (false === \is_array($properties)) {
+            throw new RuntimeException('Invalid entry data. Got: '.$content);
         }
-        
+
         return new Entry($name, $properties);
     }
 }

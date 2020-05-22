@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Logg\Tests\Integration;
 
 use Logg\Entry\Entry;
@@ -8,50 +10,50 @@ use PHPStan\Testing\TestCase;
 
 class KeepAChangelogFormatterTest extends TestCase
 {
-    public function testOrder()
+    public function testOrder(): void
     {
         $formatter = new KeepAChangelogFormatter();
-        
+
         $result = $formatter->format('1.0', [
             new Entry('my-entry', [
                 'title' => 'Keep a changelog please',
                 'type' => 'fixed',
-                'author' => 'EG'
+                'author' => 'EG',
             ]),
-            
+
             new Entry('my-entry2', [
                 'title' => 'Keep a changelog please',
                 'type' => 'added',
-                'author' => 'EG'
+                'author' => 'EG',
             ]),
-            
+
             new Entry('my-entry2', [
                 'title' => 'Keep a changelog please',
                 'type' => 'removed',
-                'author' => 'EG'
+                'author' => 'EG',
             ]),
-            
+
             new Entry('my-2ntryu', [
                 'title' => 'Keep a changelog please',
                 'type' => 'security',
-                'author' => 'EG'
+                'author' => 'EG',
             ]),
-            
+
             new Entry('my-2ntryu', [
                 'title' => 'Keep a changelog please',
                 'type' => 'changed',
-                'author' => 'EG'
+                'author' => 'EG',
             ]),
-            
+
             new Entry('my-2ntryu', [
                 'title' => 'Keep a changelog please',
                 'type' => 'deprecated',
-                'author' => 'EG'
-            ])
+                'author' => 'EG',
+            ]),
         ], []);
-        
+
         $lines = [];
-        $lines[] = '## [1.0] - ' . date('Y-m-d');
+        $lines[] = '## [1.0] - '.date('Y-m-d');
         $lines[] = '### Added';
         $lines[] = '- Keep a changelog please (EG)';
         $lines[] = '';
@@ -70,7 +72,7 @@ class KeepAChangelogFormatterTest extends TestCase
         $lines[] = '### Security';
         $lines[] = '- Keep a changelog please (EG)';
         $lines[] = '';
-        
-        $this->assertEquals(implode("\n", $lines), $result);
+
+        static::assertEquals(implode("\n", $lines), $result);
     }
 }

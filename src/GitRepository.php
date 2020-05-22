@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Logg;
 
 class GitRepository
@@ -23,13 +25,13 @@ class GitRepository
     {
         exec('cd '.$this->rootPath.' && git log -1 --pretty=%B', $lines);
 
-        if (is_array($lines) && isset($lines[0])) {
+        if (\is_array($lines) && isset($lines[0])) {
             return $lines[0];
         }
 
         return null;
     }
-    
+
     public function getLastCommitAuthor(): ?string
     {
         return exec('cd '.$this->rootPath.' && git log -1 --pretty=format:\'%an\'');

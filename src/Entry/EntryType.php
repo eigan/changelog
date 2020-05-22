@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Logg\Entry;
 
 class EntryType
@@ -8,17 +10,17 @@ class EntryType
      * @var string
      */
     public $key;
-    
+
     /**
      * @var string
      */
     public $label;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     public $description;
-    
+
     public function __construct(string $key, string $label, string $description = null)
     {
         $this->key = $key;

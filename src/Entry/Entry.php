@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Logg\Entry;
+
+use InvalidArgumentException;
 
 class Entry
 {
-    const TYPES = ['fix', 'security', 'other', 'feature'];
+    public const TYPES = ['fix', 'security', 'other', 'feature'];
 
     /**
      * @var string
@@ -12,7 +16,7 @@ class Entry
     protected $name;
 
     /**
-     * All properties from file
+     * All properties from file.
      *
      * @var array{title: string, type: string, author: string}
      */
@@ -20,7 +24,7 @@ class Entry
 
     /**
      * Entry constructor.
-     * @param string $name
+     *
      * @param array{title?: string, type?: string, author?: string} $all
      */
     public function __construct(string $name, array $all)
@@ -28,7 +32,7 @@ class Entry
         $this->name = $name;
 
         if (empty($all['title'])) {
-            throw new \InvalidArgumentException('Missing title in entry body');
+            throw new InvalidArgumentException('Missing title in entry body');
         }
 
         $this->all['title'] = $all['title'] ?? '';
@@ -37,7 +41,7 @@ class Entry
     }
 
     /**
-     * A unique name for this entry
+     * A unique name for this entry.
      *
      * @return string
      */

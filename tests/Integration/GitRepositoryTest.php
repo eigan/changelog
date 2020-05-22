@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Logg\Tests\Integration;
 
 use Logg\GitRepository;
@@ -11,19 +13,19 @@ class GitRepositoryTest extends TestCase
      * @var GitRepository
      */
     private $repository;
-    
-    public function setUp(): void
+
+    protected function setUp(): void
     {
-        $this->repository = new GitRepository(__DIR__ . '/../../');
+        $this->repository = new GitRepository(__DIR__.'/../../');
     }
 
     public function testGetLastCommitAuthor()
     {
-        return $this->assertNotEmpty($this->repository->getLastCommitAuthor());
+        return static::assertNotEmpty($this->repository->getLastCommitAuthor());
     }
 
     public function testGetLastCommitMessage()
     {
-        return $this->assertNotEmpty($this->repository->getLastCommitMessage());
+        return static::assertNotEmpty($this->repository->getLastCommitMessage());
     }
 }

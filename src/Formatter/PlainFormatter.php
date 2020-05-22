@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Logg\Formatter;
 
 use Logg\Entry\Entry;
@@ -18,19 +20,19 @@ class PlainFormatter implements IFormatter
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function format(string $headline, array $entries, array $options): string
     {
-        $content = '#### ' . $headline . "\n";
-        
+        $content = '#### '.$headline."\n";
+
         if ($options['minor']) {
             // Reset header to subheader
-            $content = '### ' . $headline . "\n";
+            $content = '### '.$headline."\n";
         }
 
         foreach ($entries as $entry) {
-            $content .= $this->formatEntry($entry) . "\n";
+            $content .= $this->formatEntry($entry)."\n";
         }
 
         return $content;
@@ -41,16 +43,16 @@ class PlainFormatter implements IFormatter
         $type = $entry->getType();
 
         $line = '* ';
-        if (empty($type) === false) {
+        if (false === empty($type)) {
             $line .= "[{$entry->getType()}] ";
         }
 
         $line .= $entry->getTitle();
-        
+
         $author = $entry->getAuthor();
-        
-        if ($author && strlen($author) > 0) {
-            $line .= ' (' . $entry->getAuthor() . ')';
+
+        if ($author && \strlen($author) > 0) {
+            $line .= ' ('.$entry->getAuthor().')';
         }
 
         return $line;

@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Logg\Entry;
 
-use function is_array;
 use Logg\Filesystem;
 use Logg\Handler\IEntryFileHandler;
+use RuntimeException;
 
 class EntryCollector
 {
-
     /**
      * @var Filesystem
      */
@@ -28,7 +29,7 @@ class EntryCollector
     }
 
     /**
-     * Read all entry files, parse them and create Entry objects
+     * Read all entry files, parse them and create Entry objects.
      *
      * @return Entry[]
      */
@@ -41,7 +42,7 @@ class EntryCollector
         foreach ($files as $file) {
             try {
                 $entry = $this->handler->parse($file['filename'], $file['content']);
-            } catch (\RuntimeException $e) {
+            } catch (RuntimeException $e) {
                 // TODO LOG
                 continue;
             }
@@ -49,21 +50,21 @@ class EntryCollector
             $entries[] = $entry;
         }
 
-        usort($entries, function (Entry $firstEntry, Entry $secondEntry) {
+        usort($entries, static function (Entry $firstEntry, Entry $secondEntry) {
             $firstIndex = array_search($firstEntry->getType(), Entry::TYPES, true);
-            $firstIndex = $firstIndex === false ? 10 : $firstIndex;
+            $firstIndex = false === $firstIndex ? 10 : $firstIndex;
             $secondIndex = array_search($secondEntry->getType(), Entry::TYPES, true);
-            $secondIndex = $secondIndex === false ? 10 : $secondIndex;
-            
+            $secondIndex = false === $secondIndex ? 10 : $secondIndex;
+
             $typeCompare = $firstIndex - $secondIndex;
-            
-            if ($typeCompare === 0) {
+
+            if (0 === $typeCompare) {
                 return strnatcmp($firstEntry->getTitle(), $secondEntry->getTitle());
             }
-            
+
             return $firstIndex - $secondIndex;
         });
-        
+
         return $entries;
     }
 }

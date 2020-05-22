@@ -1,27 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Logg\Handler;
 
 use Logg\Entry\Entry;
+use RuntimeException;
 
 interface IEntryFileHandler
 {
     public function getExtension(): string;
 
-    /**
-     * @param Entry $entry
-     *
-     * @return string
-     */
     public function transform(Entry $entry): string;
 
     /**
-     * @param string $name
-     * @param string $content
-     *
-     * @throws \RuntimeException if anything wrong with the content
-     *
-     * @return Entry
+     * @throws RuntimeException if anything wrong with the content
      */
     public function parse(string $name, string $content): Entry;
 }

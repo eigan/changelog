@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Logg;
 
+use DirectoryIterator;
 use Logg\Entry\Entry;
 use Logg\Handler\IEntryFileHandler;
+use RuntimeException;
 
 class Filesystem
 {
@@ -24,8 +28,6 @@ class Filesystem
 
     /**
      * Filesystem constructor.
-     * @param Configuration     $configuration
-     * @param IEntryFileHandler $handler
      */
     public function __construct(Configuration $configuration, IEntryFileHandler $handler)
     {
@@ -45,14 +47,12 @@ class Filesystem
     }
 
     /**
-     * Append content to changelog
-     *
-     * @param string $content
+     * Append content to changelog.
      */
     public function appendChangelog(string $content): void
     {
         $this->createChangelog();
-        
+
         $content .= file_get_contents($this->changelogPath);
 
         file_put_contents($this->changelogPath, $content);
@@ -64,17 +64,17 @@ class Filesystem
     public function getEntryContents(): array
     {
         $fileContents = [];
-        
-        if (file_exists($this->entriesPath) === false) {
+
+        if (false === file_exists($this->entriesPath)) {
             return [];
         }
-        
-        foreach (new \DirectoryIterator($this->entriesPath) as $file) {
+
+        foreach (new DirectoryIterator($this->entriesPath) as $file) {
             if ($file->isDot()) {
                 continue;
             }
 
-            $content = file_get_contents($this->entriesPath . '/' . $file->getFilename());
+            $content = file_get_contents($this->entriesPath.'/'.$file->getFilename());
 
             if (empty($content)) {
                 continue;
@@ -82,7 +82,7 @@ class Filesystem
 
             $fileContents[] = [
                 'filename' => $file->getFilename(),
-                'content' => $content
+                'content' => $content,
             ];
         }
 
@@ -90,26 +90,24 @@ class Filesystem
     }
 
     /**
-     * Writes entry to chosen directory
-     *
-     * @param Entry $entry
+     * Writes entry to chosen directory.
      */
     public function writeEntry(Entry $entry): void
     {
         $this->createEntriesPath();
-        
-        $path = $this->entriesPath .'/'. $entry->getName() . '.' . $this->handler->getExtension();
+
+        $path = $this->entriesPath.'/'.$entry->getName().'.'.$this->handler->getExtension();
         $content = $this->handler->transform($entry);
-        
+
         if (file_exists($path)) {
-            throw new \RuntimeException('Entry with same name exists. Please specify other name with \'-f\' option');
+            throw new RuntimeException('Entry with same name exists. Please specify other name with \'-f\' option');
         }
 
         file_put_contents($path, $content);
     }
 
     /**
-     * Remove everything in entries path
+     * Remove everything in entries path.
      *
      * TODO: Ensure we actually only delete entries..
      */
@@ -119,22 +117,22 @@ class Filesystem
             unlink($this->entriesPath.'/'.$entryContent['filename']);
         }
     }
-    
+
     private function createChangelog(): void
     {
-        if (file_exists($this->changelogPath) === true) {
+        if (true === file_exists($this->changelogPath)) {
             return;
         }
-        
+
         touch($this->changelogPath);
     }
-    
+
     private function createEntriesPath(): void
     {
-        if (file_exists($this->entriesPath) === true) {
+        if (true === file_exists($this->entriesPath)) {
             return;
         }
-        
+
         mkdir($this->entriesPath, 0744, true);
     }
 }
